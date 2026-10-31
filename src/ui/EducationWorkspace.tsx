@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react'
 import { LabIcon } from './LabIcon'
-
+import { EvSimulation } from './EvSimulation'
 import { EvSystemExplorer } from './EvSystemExplorer'
 
 const sections = [
@@ -56,7 +56,7 @@ export function EducationWorkspace() {
           <span className="outline-tag">INTERFACE CONCEPT</span>
         </div>
 
-        {active === 'explorer' ? <EvSystemExplorer /> : <div className="workspace-grid">
+        {active === 'explorer' ? <EvSystemExplorer /> : active === 'simulation' ? <EvSimulation onNavigate={(section) => setActive(section)} /> : <div className="workspace-grid">
           <aside className="curriculum panel">
             <div className="panel-heading"><LabIcon name="book" /><h2>LEARNING MODULES</h2></div>
             <div className="side-caption">หัวข้อการเรียนรู้</div>
@@ -108,4 +108,3 @@ export function EducationWorkspace() {
     </div>
   )
 }
-
