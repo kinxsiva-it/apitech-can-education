@@ -1,10 +1,11 @@
 ﻿import { useState } from 'react'
 import { LabIcon } from './LabIcon'
 
-
+import { EvSystemExplorer } from './EvSystemExplorer'
 
 const sections = [
   { id: 'education', label: 'EDUCATION', title: 'CAN BUS EDUCATION', thai: 'พื้นที่การเรียนรู้ CAN Bus', icon: 'book' },
+  { id: 'explorer', label: 'EV SYSTEM EXPLORER', title: 'EV SYSTEM EXPLORER', thai: 'สำรวจโครงสร้างระบบ EV', icon: 'layers' },
   { id: 'simulation', label: 'EV SIMULATION', title: 'VIRTUAL EV WORKSPACE', thai: 'พื้นที่จำลองระบบยานยนต์ไฟฟ้า', icon: 'vehicle' },
   { id: 'monitor', label: 'CAN MONITOR', title: 'CAN BUS MONITOR', thai: 'พื้นที่ตรวจสอบการสื่อสาร', icon: 'activity' },
   { id: 'decoder', label: 'SIGNAL DECODER', title: 'SIGNAL DECODER', thai: 'พื้นที่ถอดรหัสสัญญาณ', icon: 'code' },
@@ -55,7 +56,7 @@ export function EducationWorkspace() {
           <span className="outline-tag">INTERFACE CONCEPT</span>
         </div>
 
-        <div className="workspace-grid">
+        {active === 'explorer' ? <EvSystemExplorer /> : <div className="workspace-grid">
           <aside className="curriculum panel">
             <div className="panel-heading"><LabIcon name="book" /><h2>LEARNING MODULES</h2></div>
             <div className="side-caption">หัวข้อการเรียนรู้</div>
@@ -101,11 +102,10 @@ export function EducationWorkspace() {
             <div className="monitor-heading"><div className="panel-heading"><LabIcon name="activity" /><h2 id="monitor-title">CAN FRAME MONITOR</h2></div><span className="toolbar-caption">RAW FRAME WORKSPACE</span></div>
             <div className="table-scroll"><table><thead><tr>{['TIMESTAMP', 'CHANNEL', 'CAN ID', 'DLC', 'DATA (HEX)', 'SOURCE'].map((label) => <th key={label}>{label}</th>)}</tr></thead><tbody><tr><td colSpan={6}>พื้นที่แสดง CAN Frames</td></tr></tbody></table></div>
           </section>
-        </div>
+        </div>}
       </main>
       <footer className="lab-footer"><span><i /> APITECH CAN STUDIO</span><span>EDUCATION & SIMULATION PLATFORM</span><span>UI CONCEPT · NO SIMULATION DATA</span></footer>
     </div>
   )
 }
-
 
