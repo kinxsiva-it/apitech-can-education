@@ -1,0 +1,38 @@
+{
+  "network": {
+    "protocol": "classical_can",
+    "bitrate": 500000,
+    "id_format": "standard_11bit",
+    "synthetic": true
+  },
+  "messages": [{
+    "id": 640,
+    "name": "BmsStatus",
+    "dlc": 8,
+    "period_ms": 500,
+    "signals": [
+      {
+        "name": "PackVoltage",
+        "start_bit": 0,
+        "length": 16,
+        "byte_order": "little_endian",
+        "signed": false,
+        "factor": 0.1,
+        "offset": 0,
+        "unit": "V"
+      },
+      {
+        "name": "SOC",
+        "start_bit": 16,
+        "length": 8,
+        "byte_order": "little_endian",
+        "signed": false,
+        "factor": 1,
+        "offset": 0,
+        "unit": "%",
+        "min": 0,
+        "max": 100
+      }
+    ]
+  }]
+}
