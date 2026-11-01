@@ -1,112 +1,126 @@
-# คู่มือ branch แยกตามหมวดงาน
+﻿# คู่มือ branch และการแบ่งขอบเขตงาน
 
 ปรับปรุง: 1 พฤศจิกายน 2026
 
-## โครงสร้างการทำงาน
+## แนวทางหลัก
 
-- main: งานรวมที่ตรวจแล้ว ไม่แก้ UI ของหมวดต่าง ๆ โดยตรงบน main
-- features/workspace-navigation: workspace กลาง เมนู ลำดับเมนู การเชื่อมหน้า และ layout ร่วม
-- features/ui-*: งาน UI ของแต่ละเมนูตามตารางด้านล่าง
+ใช้ main เป็นฐานของงานที่ตรวจแล้ว และเปิด features/<ชื่องาน> เฉพาะงานที่กำลังทำ
+ปกติทำครั้งละหนึ่ง feature branch เมื่อเสร็จให้ตรวจ รวมเข้า main แล้วลบ branch
+ยังไม่ใช้ develop และไม่สร้าง branch ถาวรรอไว้ทุกเมนู
 
-รอบนี้ทุก features/ui-* สร้างจาก commit เดียวกันบน features/workspace-navigation
-จึงมีเมนูล่าสุดครบ และเป็น branch พี่น้อง ไม่ได้ต่อซ้อนงาน UI กัน
-main ยังไม่รวม commit workspace รอบนี้ และยังไม่ได้ push branch ใหม่ขึ้น remote
+จำนวน branch ไม่ใช่สาเหตุของ conflict โดยตรง ความเสี่ยงอยู่ที่การแก้ไฟล์เดียวกัน
+บนหลาย branch และปล่อยให้ฐานโค้ดต่างกันนาน จึงควรแบ่งงานเล็กและรวมงานสม่ำเสมอ
 
-## แก้หมวดไหน ให้ใช้ branch ไหน
+## กลุ่มงานและตำแหน่งโค้ด
 
-| หมวดงาน | Branch | ไฟล์ปัจจุบัน / ตำแหน่งที่เสนอเมื่อเริ่มสร้าง |
+ตารางนี้ระบุขอบเขตความรับผิดชอบและตัวอย่างชื่อ branch ไม่ใช่รายการ branch ที่ต้องสร้างพร้อมกัน
+
+| กลุ่ม | ขอบเขต / ตำแหน่งปัจจุบัน | ตัวอย่าง branch เมื่อเริ่มงาน |
 |---|---|---|
-| Workspace กลาง / เมนู / shared layout | features/workspace-navigation | src/App.tsx, src/ui/EducationWorkspace.tsx, src/ui/LabIcon.tsx, ส่วน CSS ร่วมใน src/index.css |
-| CAN EDUCATION | features/ui-can-education | บทเรียนยังอยู่ใน EducationWorkspace.tsx; เสนอแยกเป็น src/ui/education/ และใช้ content/lessons/ |
-| EV SYSTEM EXPLORER | features/ui-ev-system-explorer | src/ui/EvSystemExplorer.tsx |
-| EV SIMULATION | features/ui-ev-simulation | src/ui/EvSimulation.tsx |
-| EV COMPONENT LAB | features/ui-ev-component-lab | ยังเป็น placeholder; เสนอสร้าง src/ui/components-lab/ |
-| CAN MONITOR | features/ui-can-monitor | ยังเป็น placeholder; เสนอสร้าง src/ui/can-monitor/ |
-| SIGNAL & DBC LAB | features/ui-signal-dbc-lab | ยังเป็น placeholder; เสนอสร้าง src/ui/signal-dbc-lab/ |
-| CAN FAULT LAB | features/ui-can-fault-lab | ยังเป็น placeholder; เสนอสร้าง src/ui/fault-lab/ |
-| INSTRUCTOR WORKSPACE | features/ui-instructor-workspace | ยังเป็น placeholder; เสนอสร้าง src/ui/instructor/ |
+| Workspace | เมนู การประกอบหน้า App.tsx, EducationWorkspace.tsx และ shared layout | features/workspace-navigation |
+| Simulation core | src/simulator/, ECU, scheduler, scenarios และ adapter เชื่อม store | features/can-scheduler |
+| Signal processing | src/decoder/, encode/decode, validation, DBC และ mapping ใน content/dbc/ | features/signal-codec |
+| EV learning UI | EvSystemExplorer.tsx, EvSimulation.tsx และหน้า Component Lab ที่จะสร้าง | features/ev-component-lab |
+| CAN tools UI | Monitor, Frame Inspector และ Signal & DBC Lab ซึ่งยังเป็น placeholder | features/can-monitor |
+| Teaching | บทเรียนใน EducationWorkspace.tsx, content/lessons/, quizzes และ Instructor | features/lesson-player |
 
-ตำแหน่งที่ระบุว่าเสนอ ยังไม่ได้สร้างไฟล์หรือโฟลเดอร์ ไม่ถือว่าฟีเจอร์นั้นทำเสร็จแล้ว
+เลือก branch ตามผลลัพธ์ของงาน เช่น แก้หน้าปัด Simulation ใช้ features/ev-dashboard
+ไม่จำเป็นต้องรวม Explorer และ Component Lab ในงานเดียวเพียงเพราะอยู่กลุ่มเดียวกัน
 
-## ขอบเขตที่ต้องแยกให้ชัด
+## ขอบเขตแต่ละหน้า
 
-- Explorer: ภาพรวมและการเชื่อมต่อของระบบ EV, เส้นทางพลังงานและ CAN
-- Component Lab: ชิ้นส่วน EV รายชิ้น โครงสร้าง หน้าที่ ขั้วต่อ และสื่อประกอบสำหรับผู้สอน
-- Simulation: controls, dashboard, scenario selection และการแสดงผลจาก engine ในอนาคต
-- Monitor: raw frames, filter และ log
-- Signal & DBC Lab: byte/bit inspection, signal mapping และการแสดงผล decoding
-- Fault Lab: หน้าจอเลือก fault แสดงอาการและฝึกวินิจฉัย
-- Instructor: presets, คำแนะนำผู้สอน เฉลย และผลประเมิน
-- แบบทดสอบผู้เรียนให้อยู่ใน CAN Education ก่อน; คะแนนสำหรับผู้สอนอยู่ใน Instructor
+- CAN Education: บทเรียน กิจกรรม และแบบทดสอบผู้เรียน
+- EV System Explorer: ภาพรวมการเชื่อมต่อของ EV เส้นทางพลังงานและ CAN
+- EV Component Lab: ชิ้นส่วนรายชิ้น โครงสร้าง หน้าที่ ขั้วต่อ และสื่อสำหรับผู้สอน
+- EV Simulation: controls, dashboard และ scenario selection
+- CAN Monitor: raw frames, filters และ log
+- Signal & DBC Lab: bytes/bits, signal definitions และ decoded values
+- CAN Fault Lab: เลือก fault ดูอาการและฝึกวินิจฉัย
+- Instructor Workspace: presets, notes, เฉลย และผลประเมิน
 
-UI branch อาจแก้ import และจุด render ใน EducationWorkspace.tsx เพื่อเชื่อมหน้าของตัวเองได้
-แต่ถ้าเปลี่ยนชื่อ/ลำดับเมนูหรือ layout ที่มีผลกับทุกหน้า ให้ทำบน workspace branch
-ไม่เปลี่ยนหน้าอื่นที่ไม่เกี่ยวข้องใน commit เดียวกัน
+หน้าที่ยังเป็น placeholder ไม่ถือว่าพัฒนาเสร็จแล้ว
 
-โค้ด pure TypeScript ใน src/simulator/ และ src/decoder/ รวมถึง logic ใน src/store/
-เป็นงาน engine/data ไม่ใช่ UI ให้สร้าง branch งานเฉพาะจากฐานล่าสุดเมื่อต้องเริ่มทำ
-เช่น features/can-scheduler หรือ features/signal-codec ไม่ใส่ engine ทั้งก้อนใน branch เมนูหนึ่ง
+## ลำดับ dependencies
 
-## ขั้นตอนเริ่มแก้ UI
+1. กำหนด types และ data contracts
+2. พัฒนา core/decoder ที่จำเป็น ทดสอบ และรวมเข้า main
+3. ทำ adapter เชื่อม engine กับ store
+4. พัฒนา UI ที่ใช้ข้อมูลจริงจากฐานดังกล่าว
 
-ตรวจสถานะก่อนเปลี่ยน branch:
+UI mockup ทำก่อนได้ แต่ต้องระบุว่าเป็น preview และยังไม่คำนวณ telemetry
+Foundation ปัจจุบันรวมเข้า main แล้ว แต่ยังมีเพียง clock, types, store และ configuration
+จึงไม่ถือว่า simulation engine สมบูรณ์
+
+หาก UI ต้องใช้ foundation ใหม่ ให้รวม foundation เข้า main ก่อนแตก branch UI
+ใช้ stacked branches เฉพาะเมื่อจำเป็น และระบุว่าขึ้นกับ branch ใด ไม่ใช้เป็นวิธีหลัก
+
+## เริ่มงานใหม่
+
+ตรวจให้ไม่มีงานค้างก่อนเปลี่ยน branch แล้วเริ่มจาก main ล่าสุด:
 
 ```powershell
 git status
-git switch features/ui-ev-component-lab
+git switch main
+git fetch origin
+git merge --ff-only origin/main
+git switch -c features/ev-component-lab
 ```
 
-ตัวอย่างนี้ใช้ Component Lab; เปลี่ยนชื่อให้ตรงหมวดที่แก้
-หากมีงานค้าง ให้ commit งานใน branch ที่ถูกต้องก่อน อย่าย้าย branch พร้อมงานค้างโดยไม่ตรวจ
-เพราะ Git อาจพาการเปลี่ยนแปลงที่ยังไม่ commit ติดไปด้วย
+หาก main ในเครื่องมี commit ที่ยังไม่ push ให้คง commit เหล่านั้นไว้ด้วย
+ถ้า merge --ff-only ล้มเหลว ให้ตรวจประวัติและแก้การแตกสายก่อน ไม่ใช้ reset หรือ force push เพื่อข้ามปัญหา
 
-ก่อนเริ่มงานแต่ละรอบ ให้รวม main ล่าสุดเข้ามาใน branch นั้น:
+ถ้า feature branch เปิดอยู่และ main มีงานใหม่ ให้ตรวจ working tree แล้วอัปเดตด้วย:
 
 ```powershell
 git fetch origin
-git merge origin/main
+git switch main
+git merge --ff-only origin/main
+git switch features/ev-component-lab
+git merge main
 ```
 
-ถ้างานฐานที่จำเป็นยังอยู่ใน workspace branch และยังไม่เข้า main
-ให้รวมฐานนั้นก่อนทำงาน:
+ตัวอย่างชื่อใช้ Component Lab ให้เปลี่ยนเป็นงานที่กำลังทำจริง
+หากมีงานค้าง ให้ commit ใน branch ที่ถูกต้องก่อน Git อาจพางานที่ไม่ commit ติดไปตอนสลับ branch
+
+## ลด merge conflicts
+
+- ให้ EducationWorkspace.tsx เน้นประกอบหน้าและนำทาง ค่อยแยกเนื้อหาแต่ละหน้าเมื่อเริ่มแก้หมวดนั้น
+- แยก CSS ของหน้าที่พัฒนาไว้ข้าง component แล้ว import; index.css เก็บสไตล์ร่วม
+- LabIcon.tsx และเมนูเป็นไฟล์ร่วม ต้องตรวจผลกระทบต่อหน้าอื่น
+- UI branch แก้ import/จุด render เพื่อเชื่อมหน้าของตัวเองได้ โดยไม่เปลี่ยนหน้าอื่นนอกขอบเขต
+- แยก commit ตามผลลัพธ์ และตรวจ diff ก่อน stage
+- จำนวน branch ที่แนะนำ: main + feature ที่กำลังทำหนึ่งเส้น ถ้าจำเป็นจริงค่อยเปิดงานอิสระเพิ่ม
+
+แนวทางแยก component/CSS เป็นงานปรับโครงสร้างในอนาคต รอบจัด branch นี้ยังไม่ได้ย้ายโค้ด UI
+
+## จบงานและรวมเข้า main
+
+ตรวจหน้าที่แก้และเมนูที่เกี่ยวข้อง รัน npm run build และ npm run lint แล้ว commit เฉพาะไฟล์งานนั้น
+ถ้า main เดินหน้าไปแล้ว ให้ merge main เข้า feature และตรวจใหม่ก่อนรวม
+
+ตัวอย่างสำหรับงานที่ review แล้วและ main ไม่ได้แยกสาย:
 
 ```powershell
-git merge features/workspace-navigation
+git switch main
+git merge --ff-only features/ev-component-lab
+git branch -d features/ev-component-lab
 ```
 
-การสร้าง branch ไม่ได้ทำให้ branch รับการเปลี่ยนแปลงจาก branch อื่นโดยอัตโนมัติ
-ต้อง merge เพื่ออัปเดตฐาน และแก้ conflict ตามพฤติกรรมสุดท้ายที่ต้องการ
-แนะนำใช้ merge ตามตัวอย่างก่อน เพื่อไม่ต้องเขียนประวัติ commit ใหม่
+ถ้าทำงานผ่าน GitHub ให้ push feature แล้ว review/merge ด้วย PR แทนขั้นตอน merge ในเครื่อง
+หลังจากนั้น fetch และอัปเดต main ในเครื่องก่อนลบ local branch
+หาก -d ปฏิเสธ ให้ตรวจว่ามี commit ที่ยังไม่รวม ห้ามเปลี่ยนเป็น -D โดยไม่ตรวจงาน
+การลบชื่อ branch ไม่ได้ลบ commit ที่ main อ้างถึง จึงยังดูประวัติงานได้
 
-## Commit และส่งงาน
+การ push ขึ้น remote ทำเมื่อผู้ใช้สั่งหรืออนุญาตในงานนั้น ไม่ถือว่าคำสั่งตัวอย่างเป็นการอนุมัติ push
 
-1. แก้เฉพาะหมวดที่รับผิดชอบ
-2. ถ้าสร้าง component ใหม่ ให้แยก CSS ของหน้านั้นไว้ข้าง component แล้ว import
-   ลดการแก้ src/index.css พร้อมกันหลายหมวด
-3. ตรวจหน้าที่แก้และการสลับเมนูที่เกี่ยวข้อง แล้วรัน npm run build และ npm run lint
-4. ใช้ git diff ตรวจ และ git add ระบุไฟล์ที่ต้องการขึ้น หลีกเลี่ยงการรวบไฟล์ที่ไม่เกี่ยวข้อง
-5. Commit แยกตามผลลัพธ์ เช่น feat(ui): add EV component selector
-6. เมื่อต้องส่งขึ้น remote ให้ push เฉพาะ branch ที่ต้องการ แล้ว review ก่อนรวมเข้า main
-7. ถ้า UI branch อาศัย workspace ที่ยังไม่เข้า main ให้รวม workspace ก่อน แล้วค่อยรวม UI
+## การจัดระเบียบรอบนี้
 
-ตัวอย่างคำสั่งเมื่อพร้อมส่ง branch:
-
-```powershell
-git push -u origin features/ui-ev-component-lab
-```
-
-หลังรวมงาน ถ้าจะใช้ branch เดิมต่อ ให้อัปเดตจาก main ก่อนรอบถัดไป
-
-## Branch เก่าที่มีอยู่
-
-features/setup-project, features/simulation-foundation, features/requirements-plan,
-features/education-workspace, features/ev-system-explorer และ features/ev-simulation
-เป็น branch จากการแบ่ง commit รอบแรก งานเหล่านี้รวมเข้า main แล้ว
-เก็บไว้เป็นประวัติได้ แต่สำหรับงานใหม่ให้ใช้ features/ui-* ตามตาราง
-เพราะ branch เก่าชี้ไปยังฐานก่อน workspace รอบนี้
+- รวม workspace navigation และคู่มือฉบับนี้เข้า main ในเครื่อง
+- ลบ branch รอบเก่าที่งานรวมใน main แล้ว และ features/ui-* ที่ยังไม่มีงานเฉพาะ
+- เปิด features/ev-component-lab จาก main ล่าสุดสำหรับงานถัดไป ยังไม่เริ่มสร้าง UI ในรอบจัด branch
+- ยังไม่ push การเปลี่ยนแปลงรอบนี้ขึ้น remote
 
 ## ไฟล์ที่ไม่ขึ้น Git
 
 node_modules/, dist/, .codex-vite-scaffold/, ไฟล์ .env จริง, HTML ตัวอย่างขนาดใหญ่
-และ scaffold เก่าที่ .gitignore ระบุ ยังคงไม่รวมใน commit
-ไม่ commit credential หรือไฟล์ build เพิ่มเมื่อสลับหมวด
+และ scaffold เก่าที่ .gitignore ระบุ ไม่รวมใน commit

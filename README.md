@@ -28,9 +28,10 @@ Shortcuts open the existing Monitor/Decoder placeholders or System Explorer.
 
 ## Run this checkout
 
-For menu ownership, branch selection and commit workflow, see
-[Branch guide](docs/BRANCH_GUIDE.md). New menu UI work uses separate
-features/ui-* branches; shared navigation uses features/workspace-navigation.
+For code ownership, dependencies and commit workflow, see
+[Branch guide](docs/BRANCH_GUIDE.md). Use main plus one short-lived
+features/<task> branch for active work; create branches when work starts,
+merge reviewed work back into main, then delete the completed branch.
 
 Requires Node.js 22.12+ (Node 22.20 was used for validation).
 
