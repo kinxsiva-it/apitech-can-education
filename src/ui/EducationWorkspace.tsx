@@ -4,13 +4,14 @@ import { EvSimulation } from './EvSimulation'
 import { EvSystemExplorer } from './EvSystemExplorer'
 
 const sections = [
-  { id: 'education', label: 'EDUCATION', title: 'CAN BUS EDUCATION', thai: 'พื้นที่การเรียนรู้ CAN Bus', icon: 'book' },
+  { id: 'education', label: 'CAN EDUCATION', title: 'CAN BUS EDUCATION', thai: 'พื้นที่การเรียนรู้ CAN Bus', icon: 'book' },
   { id: 'explorer', label: 'EV SYSTEM EXPLORER', title: 'EV SYSTEM EXPLORER', thai: 'สำรวจโครงสร้างระบบ EV', icon: 'layers' },
   { id: 'simulation', label: 'EV SIMULATION', title: 'VIRTUAL EV WORKSPACE', thai: 'พื้นที่จำลองระบบยานยนต์ไฟฟ้า', icon: 'vehicle' },
-  { id: 'monitor', label: 'CAN MONITOR', title: 'CAN BUS MONITOR', thai: 'พื้นที่ตรวจสอบการสื่อสาร', icon: 'activity' },
-  { id: 'decoder', label: 'SIGNAL DECODER', title: 'SIGNAL DECODER', thai: 'พื้นที่ถอดรหัสสัญญาณ', icon: 'code' },
-  { id: 'fault', label: 'FAULT LAB', title: 'FAULT DIAGNOSIS LAB', thai: 'พื้นที่ฝึกวิเคราะห์ปัญหา', icon: 'tool' },
-  { id: 'instructor', label: 'INSTRUCTOR', title: 'INSTRUCTOR WORKSPACE', thai: 'พื้นที่สำหรับผู้สอน', icon: 'instructor' },
+  { id: 'components', label: 'EV COMPONENT LAB', title: 'EV COMPONENT LAB', thai: 'ห้องเรียนชิ้นส่วน EV', icon: 'tool' },
+  { id: 'monitor', label: 'CAN MONITOR', title: 'CAN MONITOR', thai: 'ตรวจสอบเฟรม CAN Bus', icon: 'activity' },
+  { id: 'decoder', label: 'SIGNAL & DBC LAB', title: 'SIGNAL & DBC LAB', thai: 'ถอดรหัสและนิยามสัญญาณ', icon: 'code' },
+  { id: 'fault', label: 'CAN FAULT LAB', title: 'CAN FAULT LAB', thai: 'ฝึกวิเคราะห์ปัญหา CAN Bus', icon: 'check' },
+  { id: 'instructor', label: 'INSTRUCTOR WORKSPACE', title: 'INSTRUCTOR WORKSPACE', thai: 'พื้นที่สำหรับผู้สอน', icon: 'instructor' },
 ] as const
 
 const topics = [
@@ -56,7 +57,18 @@ export function EducationWorkspace() {
           <span className="outline-tag">INTERFACE CONCEPT</span>
         </div>
 
-        {active === 'explorer' ? <EvSystemExplorer /> : active === 'simulation' ? <EvSimulation onNavigate={(section) => setActive(section)} /> : <div className="workspace-grid">
+        {active === 'explorer' ? <EvSystemExplorer /> : active === 'simulation' ? <EvSimulation onNavigate={(section) => setActive(section)} /> : active !== 'education' ? (
+          <section className="panel menu-placeholder" aria-labelledby="menu-placeholder-title">
+            <div className="panel-heading"><LabIcon name={current.icon} /><h2 id="menu-placeholder-title">{current.label}</h2></div>
+            <div className="workspace-canvas">
+              <div className="empty-workspace">
+                <div className="workspace-emblem"><LabIcon name={current.icon} /></div>
+                <h3>{current.label}</h3>
+                <span className="empty-label">{active === 'components' ? 'พื้นที่สำรวจชิ้นส่วนแยก EV สำหรับการสอน — เตรียมพัฒนาโมเดลและเนื้อหารายชิ้น' : 'พื้นที่สำหรับรายละเอียดที่จะกำหนดในขั้นตอนถัดไป'}</span>
+              </div>
+            </div>
+          </section>
+        ) : <div className="workspace-grid">
           <aside className="curriculum panel">
             <div className="panel-heading"><LabIcon name="book" /><h2>LEARNING MODULES</h2></div>
             <div className="side-caption">หัวข้อการเรียนรู้</div>

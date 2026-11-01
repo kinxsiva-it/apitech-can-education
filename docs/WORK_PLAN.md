@@ -7,6 +7,10 @@
 
 ## การแบ่งหน้า EV ที่ตกลงและเริ่มพัฒนาแล้ว
 
+การเลือก branch ของแต่ละหมวดดูที่ [คู่มือ branch](./BRANCH_GUIDE.md)
+EV COMPONENT LAB แยกจาก Explorer เพื่อสอนโครงสร้างและหน้าที่ของชิ้นส่วน EV รายชิ้น
+ปัจจุบันยังเป็น placeholder รอออกแบบ UI และเนื้อหา
+
 - EV SYSTEM EXPLORER: อิง MOTION OF MECHANIC เพื่อสำรวจองค์ประกอบและเส้นทางพลังงาน/CAN
   ใช้ component EvSystemExplorer.tsx ซึ่งย้ายมาจากหน้า EV เดิม
 - EV SIMULATION: อิง SIMULATDATA เพื่อควบคุม input, เลือก scenario, ดู dashboard และสถานะ CAN
