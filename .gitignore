@@ -39,6 +39,7 @@ dist-ssr
 /public/icons.svg
 /src/ui/legacy/
 
-# Local GLB comparison asset; review before committing customer files
+# Ignore local GLB assets; include only the required demo model
 /public/assets/models/motor-demo.glb
 /public/assets/models/motorglb/*.glb
+!/public/assets/models/motorglb/ev-ipmsm-motor.glb
