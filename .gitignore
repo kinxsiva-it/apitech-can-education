@@ -37,5 +37,8 @@ dist-ssr
 # Unused starter assets and legacy scaffold components (local only)
 /src/assets/
 /public/icons.svg
-/src/ui/Dashboard.tsx
-/src/ui/VehicleScene.tsx
+/src/ui/legacy/
+
+# Local GLB comparison asset; review before committing customer files
+/public/assets/models/motor-demo.glb
+/public/assets/models/motorglb/*.glb

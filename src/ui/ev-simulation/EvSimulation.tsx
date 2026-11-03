@@ -1,5 +1,5 @@
-﻿import { useState } from 'react'
-import { LabIcon } from './LabIcon'
+import { useState } from 'react'
+import { LabIcon } from '../shared/icons/LabIcon'
 
 const scenarios = [
   { id: 'standby', title: 'Standby', thai: 'เตรียมพร้อมระบบ' },

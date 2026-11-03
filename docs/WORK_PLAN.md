@@ -12,7 +12,9 @@
 งานฐานที่ UI ต้องใช้ให้ทดสอบและรวมเข้า main ก่อน จากนั้นจึงแตก branch UI จากฐานล่าสุด
 แยก component/CSS ตามหน้าระหว่างพัฒนาเพื่อลดการแก้ไฟล์ร่วมพร้อมกัน
 EV COMPONENT LAB แยกจาก Explorer เพื่อสอนโครงสร้างและหน้าที่ของชิ้นส่วน EV รายชิ้น
-ปัจจุบันยังเป็น placeholder รอออกแบบ UI และเนื้อหา
+ขณะนี้มี UI รอบแรกบน features/ev-component-lab: รายการ 6 ชิ้นส่วน ภาพ SVG แยกชั้น
+คำอธิบายและคำถามสำหรับผู้สอน ยังไม่ใช่โมเดล 3D และยังไม่รวมเข้า main
+รายละเอียดและรายการทดลองดูที่ [EV Component Lab](./EV_COMPONENT_LAB.md)
 
 - EV SYSTEM EXPLORER: อิง MOTION OF MECHANIC เพื่อสำรวจองค์ประกอบและเส้นทางพลังงาน/CAN
   ใช้ component EvSystemExplorer.tsx ซึ่งย้ายมาจากหน้า EV เดิม

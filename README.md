@@ -1,4 +1,4 @@
-﻿# APITech CAN Education
+# APITech CAN Education
 
 React + Vite + strict TypeScript foundation for a browser-first CAN education simulator.
 
@@ -27,6 +27,12 @@ Start/Pause are disabled. Telemetry and CAN results stay blank pending engine wo
 Shortcuts open the existing Monitor/Decoder placeholders or System Explorer.
 
 ## Run this checkout
+
+EV Component Lab has an initial interactive schematic UI on its feature branch:
+six component categories, exploded/assembled SVG layers, zoom, part selection,
+CAN learning notes and teaching prompts. See [Component Lab notes](docs/EV_COMPONENT_LAB.md)
+for scope, limitations and the browser review checklist. These are concept
+illustrations, not real 3D assets or a running simulation.
 
 For code ownership, dependencies and commit workflow, see
 [Branch guide](docs/BRANCH_GUIDE.md). Use main plus one short-lived
@@ -74,6 +80,9 @@ References: [Vite setup](https://vite.dev/guide/) and
 
 ## Directory structure
 
+UI files are organized by screen and responsibility. See
+[UI folder guide](src/ui/README.md) for the complete tree and editing locations.
+
 Application/source tree (excludes .git, node_modules, dist and temporary scaffolding):
 
 ```text
@@ -94,25 +103,24 @@ apitech-can-education/
 │   └── dbc/
 │       └── training-network.json
 ├── src/
-│   ├── assets/                    # Unused original Vite template images
-│   │   ├── hero.png
-│   │   ├── react.svg
-│   │   └── vite.svg
-│   ├── ui/
-│   │   ├── Dashboard.tsx
-│   │   ├── EducationWorkspace.tsx
-│   │   ├── EvSimulation.tsx
-│   │   ├── EvSystemExplorer.tsx
-│   │   ├── LabIcon.tsx
-│   │   └── VehicleScene.tsx
+│   ├── ui/                         # รายละเอียดดู src/ui/README.md
+│   │   ├── workspace/
+│   │   ├── shared/icons/
+│   │   ├── education/
+│   │   ├── ev-system-explorer/
+│   │   ├── ev-simulation/
+│   │   ├── components-lab/
+│   │   │   ├── EvComponentLab.tsx
+│   │   │   ├── data/
+│   │   │   ├── diagrams/
+│   │   │   ├── motor-procedural/
+│   │   │   ├── motor-glb/
+│   │   │   └── styles/
+│   │   └── legacy/                 # Local-only, ignored
 │   ├── simulator/
-│   │   ├── README.md
-│   │   ├── SimulationClock.ts
-│   │   └── types.ts
 │   ├── decoder/
-│   │   └── types.ts
 │   ├── store/
-│   │   └── simulationStore.ts
+│   ├── assets/                     # Unused Vite images, local-only
 │   ├── App.tsx
 │   ├── main.tsx
 │   └── index.css
