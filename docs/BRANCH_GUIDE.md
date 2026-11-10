@@ -125,6 +125,15 @@ git branch -d features/ev-component-lab
 - เปิด features/ev-component-lab จาก main ล่าสุดสำหรับงานถัดไป ยังไม่เริ่มสร้าง UI ในรอบจัด branch
 - ยังไม่ push การเปลี่ยนแปลงรอบนี้ขึ้น remote
 
+## เริ่มงานระบบสมาชิก (10 พฤศจิกายน 2026)
+
+- ใช้ `features/member-access-foundation` สำหรับ schema, migrations และ RLS ของระบบสมาชิก ตาม `MEMBERSHIP_CMS_AGREEMENTS.md`
+- Branch นี้ต่อจาก `features/ev-component-lab` ซึ่งมีฐาน UI ล่าสุดและ commits งาน export HTML, เอกสารข้อตกลง และ Supabase client แล้ว
+- ยังไม่ได้รวมงานเหล่านี้เข้า `main` หรือ Push ในรอบจัดงานนี้ จึงเป็น branch ที่มี dependency กับงาน Component Lab เดิม ไม่ใช่การพัฒนาสอง feature พร้อมกัน
+- หยุดพัฒนาบน branch Component Lab เดิม ใช้ branch สมาชิกสำหรับงานถัดไป
+- ก่อนรวม branch สมาชิก ให้ตรวจและรวม commits ฐานเดิมด้วย หรือรวม branch ฐานเข้า main ก่อน ไม่ต้อง cherry-pick commits ซ้ำ
+- `.env.local` เก็บเฉพาะในเครื่อง ส่วน `.env.example` ใช้ค่าตัวอย่างและเก็บใน Git ได้
+
 ## ไฟล์ที่ไม่ขึ้น Git
 
 node_modules/, dist/, .codex-vite-scaffold/, ไฟล์ .env จริง, HTML ตัวอย่างขนาดใหญ่
