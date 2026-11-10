@@ -7,7 +7,7 @@ npm install
 npm run export:html
 ```
 
-ไฟล์ส่งลูกค้า: `dist/standalone/APITech-CAN-Education.html`
+ไฟล์ส่งลูกค้า: `apps/education-web/dist/standalone/APITech-CAN-Education.html`
 
 ส่งเฉพาะไฟล์ HTML นี้ได้เลย ไม่ต้องแนบ assets, node_modules หรือไฟล์ GLB เพิ่ม
 ลูกค้าดาวน์โหลดไฟล์แล้วเปิดด้วย Chrome หรือ Edge บนเครื่องได้โดยตรง ไม่ต้องรัน npm หรือเว็บเซิร์ฟเวอร์
@@ -16,7 +16,7 @@ npm run export:html
 Exporter รวม JavaScript, CSS และโมเดล `ev-ipmsm-motor.glb` ไว้ใน HTML
 ไม่รวม HTML อ้างอิงของลูกค้า, credentials หรือไฟล์โมเดลอื่น
 ขั้นตอน export ไม่อ่านไฟล์ .env และไม่แก้โมเดลหรือ source ของ Viewer
-ใช้ `scripts/export-html.mjs` เพื่อสร้างไฟล์ใหม่ทุกครั้งหลังปรับ UI หรือเนื้อหา
+ใช้ `apps/education-web/scripts/export-html.mjs` เพื่อสร้างไฟล์ใหม่ทุกครั้งหลังปรับ UI หรือเนื้อหา
 ผลลัพธ์อยู่ใน dist ซึ่งถูก ignore ไว้ตามเดิม ไม่ได้ Commit หรือ Push อัตโนมัติ
 
 ไฟล์นี้เป็นสำเนา Demo ของความสามารถปัจจุบัน เมนูที่ยังเป็น placeholder จะยังเป็น placeholder

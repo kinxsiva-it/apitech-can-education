@@ -1,5 +1,9 @@
 # EV Component Lab — UI รอบแรก
 
+?????? monorepo: source ???? apps/education-web/ ???? ??????????????? build/lint ???? ??? motor tests 6 ????????
+??????????????? geometry ???????? Viewer ??????????????????????? browser ?????????????
+????????????????????????????????????????????????????????
+
 Branch: features/ev-component-lab
 
 ## ขอบเขต
@@ -14,14 +18,14 @@ Branch: features/ev-component-lab
 
 ## ไฟล์
 
-- src/ui/components-lab/motor-procedural/Motor3D.tsx: มอเตอร์ 3D ที่สร้างด้วยโค้ด (ช่อง ELECTRIC MOTOR)
-- src/ui/components-lab/motor-glb/MotorGlbPreview.tsx: ช่องนำเข้า GLB แยกสำหรับเปรียบเทียบ
+- apps/education-web/src/ui/components-lab/motor-procedural/Motor3D.tsx: มอเตอร์ 3D ที่สร้างด้วยโค้ด (ช่อง ELECTRIC MOTOR)
+- apps/education-web/src/ui/components-lab/motor-glb/MotorGlbPreview.tsx: ช่องนำเข้า GLB แยกสำหรับเปรียบเทียบ
 
-- src/ui/components-lab/EvComponentLab.tsx: state และ UI ของหน้า
-- src/ui/components-lab/diagrams/ComponentDiagram.tsx: ภาพ SVG และการเลือกชั้น
-- src/ui/components-lab/data/parts.ts: เนื้อหาชิ้นส่วนและคำถาม/แนวคำตอบ
-- src/ui/components-lab/styles/component-lab.css: สไตล์เฉพาะหน้าและ responsive layout
-- src/ui/workspace/EducationWorkspace.tsx: เชื่อมเมนู components เข้าหน้าใหม่
+- apps/education-web/src/ui/components-lab/EvComponentLab.tsx: state และ UI ของหน้า
+- apps/education-web/src/ui/components-lab/diagrams/ComponentDiagram.tsx: ภาพ SVG และการเลือกชั้น
+- apps/education-web/src/ui/components-lab/data/parts.ts: เนื้อหาชิ้นส่วนและคำถาม/แนวคำตอบ
+- apps/education-web/src/ui/components-lab/styles/component-lab.css: สไตล์เฉพาะหน้าและ responsive layout
+- apps/education-web/src/ui/workspace/EducationWorkspace.tsx: เชื่อมเมนู components เข้าหน้าใหม่
 
 ## สิ่งที่ทดลองได้
 
@@ -39,7 +43,7 @@ Branch: features/ev-component-lab
 
 ## Motor GLB Explorer — ปรับปรุง interaction
 
-ยังใช้ public/assets/models/motorglb/ev-ipmsm-motor.glb เดิม ไม่แก้ geometry, ชื่อ Node,
+ยังใช้ apps/education-web/public/assets/models/motorglb/ev-ipmsm-motor.glb เดิม ไม่แก้ geometry, ชื่อ Node,
 วัสดุต้นฉบับ หรือเอกสาร SolidCraft ของผู้ใช้ ตรวจ JSON ของ GLB และ hierarchy ก่อนแก้:
 63 mesh ภายใต้ 10 Group; metadata: units=m, upAxis=Y, motorAxis=X
 แปลง source delta ด้วย [x,y,z] mm → [x,z,-y] / 1000 m
@@ -112,7 +116,7 @@ Highlight ใช้ material clones แบบ lazy และ cache ต่อ mes
 8. Network ไม่ควรโหลด GLB ใหม่เมื่อสลับโหมด; Reload file เป็นคำสั่งโหลดใหม่โดยชัดเจน
 
 ตามคำสั่งผู้ใช้ รอบนี้ไม่ได้รัน test suite, typecheck, lint, build หรือ browser smoke test
-ปรับค่าคาดหวังใน tests/motor-model.test.ts ให้ตรงกับ cutaway/offsets ใหม่แล้ว แต่ยังไม่ได้รัน
+ปรับค่าคาดหวังใน apps/education-web/tests/motor-model.test.ts ให้ตรงกับ cutaway/offsets ใหม่แล้ว แต่ยังไม่ได้รัน
 ยังไม่ได้ commit/push
 
 ## ข้อจำกัด

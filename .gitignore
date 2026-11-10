@@ -32,14 +32,17 @@ dist-ssr
 !.env.example
 
 # Customer UI reference (local only)
-/public/assets/API Motorcy SIM - Web (standalone) (2).html
+/apps/education-web/public/assets/API Motorcy SIM - Web (standalone) (2).html
 
 # Unused starter assets and legacy scaffold components (local only)
-/src/assets/
-/public/icons.svg
-/src/ui/legacy/
+/apps/education-web/src/assets/
+/apps/education-web/public/icons.svg
+/apps/education-web/src/ui/legacy/
 
 # Ignore local GLB assets; include only the required demo model
-/public/assets/models/motor-demo.glb
-/public/assets/models/motorglb/*.glb
-!/public/assets/models/motorglb/ev-ipmsm-motor.glb
+/apps/education-web/public/assets/models/motor-demo.glb
+/apps/education-web/public/assets/models/motorglb/*.glb
+!/apps/education-web/public/assets/models/motorglb/ev-ipmsm-motor.glb
+
+# Generated compiler state
+*.tsbuildinfo

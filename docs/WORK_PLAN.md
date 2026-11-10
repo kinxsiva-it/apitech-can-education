@@ -1,5 +1,10 @@
 # แผนพัฒนาร่วมกัน — APITech CAN Education
 
+สถานะโครงสร้างล่าสุด: ใช้ monorepo แยก `apps/education-web`, `apps/admin-web` และ NestJS ที่ `apps/api`
+ดู [Architecture](ARCHITECTURE.md) และ [ข้อตกลงสมาชิก/CMS](MEMBERSHIP_CMS_AGREEMENTS.md) สำหรับขอบเขตออนไลน์และระบบสมาชิกที่ตกลงภายหลัง
+path `src/`, `public/`, `tests/` ของเว็บเดิมในแผนส่วนเก่าให้อ่านภายใต้ `apps/education-web/`
+ข้อความเกี่ยวกับ offline หรือ Supabase เป็นเพียงงานอนาคตในแผนเดิมถูกแทนด้วยข้อตกลงใหม่ แต่ simulator ยังต้องแยกเป็น pure TypeScript ตามเดิม
+
 วันที่วิเคราะห์: 31 ตุลาคม 2026
 
 แหล่งข้อกำหนด: [Customer handoff v1.0](./APITech_CAN_Bus_Education_Simulation_Handoff.md)

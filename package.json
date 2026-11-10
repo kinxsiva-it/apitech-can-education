@@ -1,36 +1,33 @@
 {
   "name": "apitech-can-education",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "export:html": "node scripts/export-html.mjs",
-    "lint": "oxlint",
-    "preview": "vite preview",
-    "test:motor": "node --experimental-strip-types --test tests/motor-model.test.ts"
+  "engines": {
+    "node": ">=22.12.0"
   },
-  "dependencies": {
-    "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.2",
-    "@supabase/supabase-js": "^2.118.0",
-    "react": "^19.3.1",
-    "react-dom": "^19.3.1",
-    "react-router-dom": "^7.18.5",
-    "three": "^0.187.0",
-    "zustand": "^5.0.16"
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:education",
+    "dev:education": "npm run dev --workspace=@apitech/education-web",
+    "dev:admin": "npm run dev --workspace=@apitech/admin-web",
+    "dev:api": "npm run dev --workspace=@apitech/api",
+    "dev:all": "concurrently --kill-others-on-fail --names education,admin,api \"npm:dev:education\" \"npm:dev:admin\" \"npm:dev:api\"",
+    "build": "npm run build --workspace=@apitech/contracts && npm run build:api && npm run build:education && npm run build:admin",
+    "build:education": "npm run build --workspace=@apitech/education-web",
+    "build:admin": "npm run build --workspace=@apitech/admin-web",
+    "build:api": "npm run build --workspace=@apitech/api",
+    "lint": "oxlint apps packages",
+    "preview": "npm run preview --workspace=@apitech/education-web",
+    "export:html": "npm run export:html --workspace=@apitech/education-web",
+    "test:motor": "npm run test:motor --workspace=@apitech/education-web",
+    "test:api": "npm run test --workspace=@apitech/api"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@types/node": "^24.19.2",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@types/three": "^0.187.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "oxlint": "^1.89.0",
-    "tailwindcss": "^4.3.3",
-    "typescript": "~7.0.2",
-    "vite": "^8.3.5"
+    "concurrently": "^10.0.7",
+    "oxlint": "^1.89.0"
   }
 }

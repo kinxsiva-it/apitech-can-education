@@ -13,7 +13,7 @@
 
 ## กลุ่มงานและตำแหน่งโค้ด
 
-ตำแหน่ง UI ล่าสุดดูที่ [คู่มือโฟลเดอร์ UI](../src/ui/README.md):
+ตำแหน่ง UI ล่าสุดดูที่ [คู่มือโฟลเดอร์ UI](../apps/education-web/src/ui/README.md):
 workspace/ สำหรับ shell และเมนู, education/ สำหรับบทเรียน,
 shared/icons/ สำหรับไอคอนร่วม และแต่ละหมวดมีโฟลเดอร์ของตัวเอง
 Motor GLB อยู่ใน components-lab/motor-glb/ แยกจาก motor-procedural/ และ diagrams/
@@ -23,8 +23,11 @@ Motor GLB อยู่ใน components-lab/motor-glb/ แยกจาก motor-
 | กลุ่ม | ขอบเขต / ตำแหน่งปัจจุบัน | ตัวอย่าง branch เมื่อเริ่มงาน |
 |---|---|---|
 | Workspace | เมนู การประกอบหน้า App.tsx, EducationWorkspace.tsx และ shared layout | features/workspace-navigation |
-| Simulation core | src/simulator/, ECU, scheduler, scenarios และ adapter เชื่อม store | features/can-scheduler |
-| Signal processing | src/decoder/, encode/decode, validation, DBC และ mapping ใน content/dbc/ | features/signal-codec |
+| Admin CMS | apps/admin-web/src/ สำหรับหน้าจอผู้ดูแล | features/admin-members |
+| Backend | apps/api/src/modules/ สำหรับ NestJS API | features/member-access-foundation |
+| Data/Contracts | supabase/ สำหรับ migrations และ packages/contracts/ สำหรับ API types | features/member-access-foundation |
+| Simulation core | apps/education-web/src/simulator/, ECU, scheduler, scenarios และ adapter เชื่อม store | features/can-scheduler |
+| Signal processing | apps/education-web/src/decoder/, encode/decode, validation, DBC และ mapping ใน content/dbc/ | features/signal-codec |
 | EV learning UI | EvSystemExplorer.tsx, EvSimulation.tsx และหน้า Component Lab ที่จะสร้าง | features/ev-component-lab |
 | CAN tools UI | Monitor, Frame Inspector และ Signal & DBC Lab ซึ่งยังเป็น placeholder | features/can-monitor |
 | Teaching | บทเรียนใน EducationWorkspace.tsx, content/lessons/, quizzes และ Instructor | features/lesson-player |
@@ -133,6 +136,17 @@ git branch -d features/ev-component-lab
 - หยุดพัฒนาบน branch Component Lab เดิม ใช้ branch สมาชิกสำหรับงานถัดไป
 - ก่อนรวม branch สมาชิก ให้ตรวจและรวม commits ฐานเดิมด้วย หรือรวม branch ฐานเข้า main ก่อน ไม่ต้อง cherry-pick commits ซ้ำ
 - `.env.local` เก็บเฉพาะในเครื่อง ส่วน `.env.example` ใช้ค่าตัวอย่างและเก็บใน Git ได้
+
+## โครงสร้าง monorepo ล่าสุด
+
+- งานปัจจุบันยังอยู่ `features/member-access-foundation` ไม่สร้าง branch ระยะยาวแยกตามแอป
+- Education เดิมย้ายไป `apps/education-web/` และ Admin อยู่ `apps/admin-web/`
+- Backend ใช้ NestJS ที่ `apps/api/`; API types ใช้ร่วมกันที่ `packages/contracts/`
+- Schema/RLS/RPC ในอนาคตอยู่ `supabase/` ไม่ปนกับ source ของ Frontend
+- `.env.local` เดิมย้ายไป `apps/education-web/.env.local`; env ของ API แยกที่ `apps/api/`
+- Root package.json ใช้สั่ง npm workspaces และ root package-lock.json เป็น lockfile เดียว
+- รัน dev/build/lint จาก root; `npm run dev:all` เปิดสามแอป และ `npm run dev` ยังเปิด Education
+- ดูรายละเอียด ownership และเส้นทางข้อมูลที่ [Architecture](ARCHITECTURE.md)
 
 ## ไฟล์ที่ไม่ขึ้น Git
 

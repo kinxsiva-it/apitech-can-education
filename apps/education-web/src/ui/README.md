@@ -1,5 +1,8 @@
 # โครงสร้าง UI
 
+โฟลเดอร์นี้อยู่ใน `apps/education-web/src/ui/` แล้ว path `src/`, `public/` และ `tests/` ในคู่มือนี้ให้อ่านจาก root ของแอป Education
+Admin CMS อยู่ `apps/admin-web/` และ NestJS อยู่ `apps/api/` ไม่วางโค้ดสองส่วนนี้ใน UI ของ Education
+
 แบ่งตามหมวดที่ผู้ใช้เห็น ส่วน logic จำลอง CAN และ decoder ยังคงอยู่ใน
 src/simulator/, src/decoder/ และ src/store/ ตามเดิม
 
