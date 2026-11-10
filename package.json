@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "export:html": "node scripts/export-html.mjs",
     "lint": "oxlint",
     "preview": "vite preview",
     "test:motor": "node --experimental-strip-types --test tests/motor-model.test.ts"
