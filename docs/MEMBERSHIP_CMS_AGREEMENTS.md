@@ -5,6 +5,8 @@
 สถานะ: สรุปจากการวางแผนร่วมกับเจ้าของโปรเจกต์ ยังไม่ได้เริ่มพัฒนาระบบสมาชิกหรือ CMS
 ข้อกำหนดในเอกสารนี้เป็นการตัดสินใจของเจ้าของโปรเจกต์ระหว่างวางแผน ไม่ใช่ RQM เพิ่มเติมที่ได้รับจากลูกค้า
 
+แบบเสนอฐานข้อมูลสมาชิก ขั้นตอนอนุมัติ และ RLS อยู่ใน [MEMBER_ACCESS_DESIGN.md](MEMBER_ACCESS_DESIGN.md) ยังไม่ได้ apply กับฐานข้อมูลจริง
+
 ## 1. เป้าหมายและขอบเขตล่าสุด
 
 - ระบบจริงเป็น Web App ที่ใช้งานออนไลน์ทั้งหมด ไม่พัฒนาการใช้งานออฟไลน์ในขอบเขตนี้
@@ -126,16 +128,16 @@ CMS ต้องเก็บ log การแก้ไขทุกครั้�
 
 เป็นแนวทางสำหรับพัฒนาต่อ ไม่ใช่งานที่ทำเสร็จแล้ว:
 
-- Education และ Admin CMS อยู่ repo เดียวกัน เริ่มจาก React + TypeScript แอปเดียว แยก route/layout
-- เส้นทางตัวอย่าง: `/login`, `/register`, `/pending-approval`, `/learn/*`, `/admin/*`
+- ข้อตกลงสถาปัตยกรรมล่าสุด: monorepo แยก React Education (`apps/education-web`), React Admin (`apps/admin-web`) และ NestJS/TypeScript API (`apps/api`) ตาม [ARCHITECTURE.md](ARCHITECTURE.md)
+- เส้นทางตัวอย่างใน Education: `/login`, `/register`, `/pending-approval`, `/learn/*`; Admin เป็นแอปแยก ไม่ต้อง bundle เข้า Education
 - Supabase Auth ดูแลบัญชี PostgreSQL ดูแลข้อมูล Storage ดูแลรูปภาพ
 - ใช้ RLS ตรวจทั้งสิทธิ์และสถานะบัญชี ไม่อาศัยการซ่อนเมนูเพียงอย่างเดียว
 - สมาชิกเปลี่ยน role หรืออนุมัติตัวเองไม่ได้
-- Edge Functions จัดการงานที่ต้องใช้สิทธิ์ Server และอีเมลแจ้งผล โดยตรวจสิทธิ์ผู้เรียก
+- NestJS จัดการ API กลาง การตรวจ JWT/สิทธิ์ และงานประสานอีเมล โดยคง transaction/RLS/audit ที่ฐานข้อมูล ไม่ทำกติกาซ้ำใน Edge Functions
 - secret keys อยู่ฝั่ง Server เท่านั้น
 - Schema, RLS และการเปลี่ยนแปลงฐานข้อมูลเก็บเป็น migrations ใน repo
 - Simulation core และ decoder แยกจาก React และ Backend ตามโครงสร้างเดิม
-- ยังไม่จำเป็นต้องเพิ่ม Express/NestJS หรือแยก Admin เป็นอีก repository
+- Backend เริ่มเป็น modular monolith บริการเดียว ยังไม่แยก microservices และไม่แยก repository ของ Admin
 
 ## 10. ลำดับงานที่เสนอ
 
@@ -154,7 +156,8 @@ CMS ต้องเก็บ log การแก้ไขทุกครั้�
 
 คำถามหลักด้านขอบเขตสำหรับรอบวางแผนนี้ได้ข้อสรุปแล้ว ใช้ Supabase Project ใหม่สำหรับโปรเจกต์นี้
 
-ข้อมูลสำหรับขั้นตั้งค่าที่ยังรอ: Project URL, publishable key สำหรับหน้าเว็บ, บริการ/โดเมนส่งอีเมล และ URL ของเว็บสำหรับ Auth redirects
+เตรียม Project URL และ publishable key ใน `apps/education-web/.env.local` (ย้ายจาก root) พร้อม Supabase browser client แล้ว โดยไม่เก็บค่าจริงในเอกสาร
+ข้อมูลสำหรับขั้นตั้งค่าที่ยังรอ: บริการ/โดเมนส่งอีเมล และ URL ของเว็บสำหรับ Auth redirects
 ไม่ต้องส่ง database password, secret key หรือ service_role key ผ่านแชต ให้กำหนดผ่าน environment/secrets ในขั้นตั้งค่า
 
 รายละเอียดทางเทคนิคที่จะกำหนดก่อน production: validation และขนาดรูป, ระยะเวลาเก็บ audit log,
