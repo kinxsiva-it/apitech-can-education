@@ -23,4 +23,7 @@ test('API health and CORS through a real HTTP listener', async () => {
 test('startup rejects invalid port and wildcard CORS configuration', () => {
   assert.throws(() => validateEnvironment({ PORT: 'invalid' }), /PORT/)
   assert.throws(() => validateEnvironment({ CORS_ORIGINS: '*' }), /CORS_ORIGINS/)
+  assert.throws(() => validateEnvironment({ SUPABASE_URL:'https://example.supabase.co' }), /both/)
+  assert.throws(() => validateEnvironment({ SUPABASE_URL:'https://example.supabase.co', SUPABASE_PUBLISHABLE_KEY:'sb_secret_do_not_use' }), /publishable/)
+  assert.throws(() => validateEnvironment({ SUPABASE_URL:'http://remote.example', SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test' }), /HTTPS/)
 })

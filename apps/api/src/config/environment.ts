@@ -13,5 +13,18 @@ export function validateEnvironment(input: Record<string, unknown>) {
   })) throw new Error('CORS_ORIGINS must contain comma-separated HTTP(S) origins without trailing slashes.')
   const host = String(input.HOST ?? '127.0.0.1').trim()
   if (!host) throw new Error('HOST must not be empty.')
-  return { ...input, PORT: port, HOST: host, CORS_ORIGINS: origins }
+  const supabaseUrl = String(input.SUPABASE_URL ?? '').trim().replace(/\/$/, '')
+  const supabaseKey = String(input.SUPABASE_PUBLISHABLE_KEY ?? '').trim()
+  if (Boolean(supabaseUrl) !== Boolean(supabaseKey)) throw new Error('Set both SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY.')
+  if (supabaseUrl) {
+    let valid = false
+    try {
+      const url = new URL(supabaseUrl)
+      valid = url.origin === supabaseUrl && (url.protocol === 'https:' || (url.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname)))
+    } catch { /* rejected below */ }
+    if (!valid) throw new Error('SUPABASE_URL must be an HTTPS origin (HTTP allowed only for local development).')
+    if (!/^sb_publishable_[A-Za-z0-9_-]+$/.test(supabaseKey)) throw new Error('Use a Supabase publishable key, never a secret/service-role key.')
+  }
+  return { ...input, PORT: port, HOST: host, CORS_ORIGINS: origins,
+    SUPABASE_URL: supabaseUrl || undefined, SUPABASE_PUBLISHABLE_KEY: supabaseKey || undefined }
 }

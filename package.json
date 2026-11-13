@@ -20,13 +20,15 @@
     "build:education": "npm run build --workspace=@apitech/education-web",
     "build:admin": "npm run build --workspace=@apitech/admin-web",
     "build:api": "npm run build --workspace=@apitech/api",
-    "lint": "oxlint apps packages",
+    "lint": "oxlint apps packages supabase/tests",
     "preview": "npm run preview --workspace=@apitech/education-web",
     "export:html": "npm run export:html --workspace=@apitech/education-web",
     "test:motor": "npm run test:motor --workspace=@apitech/education-web",
-    "test:api": "npm run test --workspace=@apitech/api"
+    "test:api": "npm run test --workspace=@apitech/api",
+    "test:db": "node --test supabase/tests/*.test.mjs"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.16",
     "concurrently": "^10.0.7",
     "oxlint": "^1.89.0"
   }

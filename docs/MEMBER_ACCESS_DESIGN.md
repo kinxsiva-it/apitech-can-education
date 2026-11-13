@@ -2,14 +2,19 @@
 
 วันที่: 10 พฤศจิกายน 2026
 Branch: `features/member-access-foundation`
-สถานะ: แบบเสนอสำหรับตรวจร่วมกัน ยังไม่มี SQL migrations และยังไม่เปลี่ยนฐานข้อมูลจริง
+สถานะ: มี SQL migrations, local PostgreSQL tests และ NestJS members endpoints แล้ว ยังไม่ apply หรือทดสอบ end-to-end กับ Supabase จริง
 
 ข้อกำหนดอ้างอิง: [ข้อตกลงสมาชิกและ CMS](MEMBERSHIP_CMS_AGREEMENTS.md)
 เอกสารนี้ระบุแนวทาง implementation ที่เสนอ แยกจากข้อกำหนดที่ตกลงแล้ว หากมีรายละเอียดใหม่ด้านพฤติกรรม ให้ตรวจร่วมกันก่อนนำไปใช้
 
 สถาปัตยกรรมล่าสุดเลือก React สองแอปและ NestJS API ใน monorepo ตาม [ARCHITECTURE.md](ARCHITECTURE.md)
 Auth SDK ใช้ใน browser สำหรับบัญชี/session ส่วนข้อมูลธุรกิจให้เรียกผ่าน NestJS API ซึ่งตรวจ JWT และเรียก RPC ด้วย JWT ผู้เรียกเพื่อคง RLS
-ตารางและ RPC ด้านล่างเป็นข้อเสนอฐานข้อมูล ยังไม่ได้ implement ใน API scaffold
+API ที่ implement แล้วดูที่ [MEMBERS_API.md](MEMBERS_API.md) รายละเอียดในแบบที่ยังไม่มี endpoint ให้ถือเป็นแผนระยะถัดไป
+
+รายละเอียด implementation/test ล่าสุดดูที่ [Supabase README](../supabase/README.md)
+SQL ใช้ชื่อ parameters แบบ `p_*`; การปิดสถาบันใช้ `save_institution(..., p_active=false, ...)`
+สถาบันมี version เพิ่มเพื่อป้องกันการแก้ทับกัน และ get_my_access คืน JSON ของบัญชี/คำขอล่าสุด
+Local tests ยืนยัน SQL/grants/RLS บน PGlite แต่ยังไม่ยืนยัน Supabase Auth/PostgREST integration หรือหลาย connection พร้อมกัน
 
 ## 1. ขอบเขตรอบแรก
 
@@ -238,7 +243,7 @@ Publish/rollback เปลี่ยน published release แบบ atomic เพ
 13. หน้า Register อ่านสถาบันได้เฉพาะข้อมูลจำเป็น และเลือกสถาบันปิดใช้งานใหม่ไม่ได้
 
 จะตรวจทั้ง grants, RLS, RPC EXECUTE และพฤติกรรมใน transaction ภายใต้ anon/authenticated จริง ไม่ทดสอบเฉพาะด้วย service role
-ผลลัพธ์ขณะนี้เป็นเอกสารออกแบบเท่านั้น ยังไม่ได้รันทดสอบฐานข้อมูลหรืออ้างว่ากฎเหล่านี้ implement แล้ว
+มี SQL และทดสอบฐานข้อมูลในเครื่องแล้วตาม Supabase README แต่ checklist ด้าน integration/concurrency/worker ยังไม่ครบ ห้ามถือว่าระบบพร้อม production
 
 ## 11. แหล่งอ้างอิงทางเทคนิค
 

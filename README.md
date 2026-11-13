@@ -31,7 +31,7 @@ Each app owns its environment; copy its .env.example to .env.local for a fresh c
 | apps/admin-web/.env.local | Optional VITE_API_URL; empty means same-origin /api |
 | apps/api/.env.local | Port, host, CORS and future server authentication settings |
 
-API starts with local defaults without an env file. Its Supabase settings are reserved for the next auth module.
+API starts with local defaults without an env file. Member endpoints need both Supabase settings; health remains public without them.
 Only browser-safe values may use VITE_. Never expose secret/service-role keys to either frontend.
 Real env files are ignored; examples contain placeholders only. Restart Vite after changing env.
 
@@ -72,6 +72,7 @@ Shared contracts contain API types, never database clients or secrets; types do 
 npm run build
 npm run lint
 npm run test:api
+npm run test:db
 npm run test:motor
 npm run export:html
 ```
@@ -87,8 +88,10 @@ Build artifacts, dependencies and real environment files are not tracked.
 - Existing Education and interactive SVG/procedural/GLB motor views are preserved; tracked motor GLB has 63 meshes.
 - CAN execution/telemetry remain unfinished. Input controls do not imply simulated CAN results.
 - Admin is a starter screen with API health checking, not completed member/content management.
-- API implements /api/health and configuration/CORS, not membership endpoints or Supabase readiness checks.
-- Login, JWT guards, RLS, migrations and email delivery are not implemented. Current demo and GLB remain public.
+- API implements health/institutions and authenticated member/Admin review endpoints. Health is not a Supabase readiness check.
+- Member schema/RLS/workflow migrations and isolated PostgreSQL tests are prepared in supabase/ but not applied to the hosted project.
+- API verifies Bearer tokens with Supabase Auth and live database access, forwarding the user JWT to RPCs with RLS.
+- Frontend login, hosted migrations/integration and email delivery remain unfinished. Current Education demo and GLB remain public.
 - Customer reference HTML and legacy scaffold components remain local-only inside Education.
 - Production is online-only. Exported HTML is a review/demo artifact, separate from access-controlled production.
 
@@ -97,6 +100,7 @@ Build artifacts, dependencies and real environment files are not tracked.
 - [Architecture](docs/ARCHITECTURE.md)
 - [Membership/CMS agreements](docs/MEMBERSHIP_CMS_AGREEMENTS.md)
 - [Member access design](docs/MEMBER_ACCESS_DESIGN.md)
+- [Members API](docs/MEMBERS_API.md)
 - [Branch guide](docs/BRANCH_GUIDE.md)
 - [Education UI guide](apps/education-web/src/ui/README.md)
 - [Component Lab](docs/EV_COMPONENT_LAB.md)

@@ -70,7 +70,7 @@ RLS/grants/RPC ในแบบต้อง implement และทดสอบก
 - Storage: รูปภาพและไฟล์ส่วนตัวในระยะ CMS; draft ไม่ใช้ public bucket
 - Email worker: แยกหน้าที่จาก HTTP handler ใช้ outbox/lease/idempotency แม้ยังอยู่ระบบเดียว
 - ไม่ทำ Edge Functions ซ้ำกับ NestJS สำหรับกติกาสมาชิกเดียวกัน
-- ขณะนี้ยังไม่มี JWT guards, migrations หรือการตั้งค่า Auth บน Supabase จริง
+- มี migrations, Global AuthGuard และ Members API แล้ว ดู [Members API](MEMBERS_API.md); ยังไม่ apply หรือทดสอบ end-to-end บน Supabase จริง
 
 ## Environment และ deployment
 
