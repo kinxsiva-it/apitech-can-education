@@ -1,5 +1,8 @@
 # ทดสอบอีเมลยืนยันและสมาชิกครั้งแรก
 
+ตอนนี้มีหน้าสมัคร/เข้าสู่ระบบบนเว็บแล้ว แนะนำเริ่มที่ [คู่มือทดสอบผ่านเว็บ](MEMBER_AUTH_UI.md)
+คำสั่ง CLI ด้านล่างยังใช้ตรวจ Auth/API เพิ่มเติมได้
+
 หากไม่สะดวกกรอกรหัสผ่านใน Terminal ใช้ [Postman Collection และคู่มือ](../tools/postman/README.md) แทนได้ โดยเริ่ม Login สำหรับบัญชีที่ยืนยันอีเมลแล้ว
 
 คำสั่งชุดนี้ส่งคำขอ signup จริงเมื่อผู้ใช้รันและกรอกข้อมูลใน Terminal
@@ -13,7 +16,7 @@
 - Default SMTP อนุญาตอีเมลสมาชิกทีม Supabase ใช้อีเมลเดียวกับบัญชี Supabase ของเจ้าของ Project สำหรับรอบแรก
 - คง Confirm email เปิดอยู่
 - เปิด Authentication → URL Configuration ของ Project `zkhrylfgslbcgcwhdmpt`
-- ตั้ง Site URL เป็น `http://localhost:5173` และเพิ่ม Redirect URL `http://localhost:5173` แล้วบันทึก
+- ตั้ง Site URL เป็น `http://localhost:5173` และเพิ่ม Redirect URLs `http://localhost:5173`, `http://localhost:5173/auth/callback` และ `http://localhost:5173/reset-password` แล้วบันทึก
 - นี่เป็นค่าเครื่องพัฒนาชั่วคราว ก่อน deploy ต้องใช้ URL เว็บจริงตาม environment
 
 อีเมลที่ Login Supabase Dashboard ไม่ได้กลายเป็นบัญชีอาจารย์ในเว็บเราโดยอัตโนมัติ จึงใช้อีเมลเดียวกันสมัครทดสอบได้
@@ -40,7 +43,7 @@ npm run test:auth:signup
 ใช้รหัสผ่านทดสอบอย่างน้อย 8 ตัวอักษร ไม่ใช้รหัสผ่านเดียวกับบัญชี Supabase Dashboard
 
 เมื่อระบบรับคำขอแล้ว ให้เปิด Inbox/Spam ของอีเมลนั้นและกดลิงก์ Confirm your email
-ลิงก์ควรกลับมาที่ localhost:5173 โดยเว็บยังเป็นหน้า Education เดิม ไม่ใช่หน้าผลการยืนยัน/login ที่สมบูรณ์
+ลิงก์จาก CLI กลับมาที่ localhost:5173 ส่วนการสมัครผ่านเว็บใช้ /auth/callback ระบบจะตรวจ session และสิทธิ์จาก API ก่อนเปิดหน้ารออนุมัติหรือให้เข้าสู่ระบบ
 
 ## 4. ตรวจหลังยืนยัน
 

@@ -24,6 +24,7 @@
     "preview": "npm run preview --workspace=@apitech/education-web",
     "export:html": "npm run export:html --workspace=@apitech/education-web",
     "test:motor": "npm run test:motor --workspace=@apitech/education-web",
+    "test:auth:ui": "npm run test:auth:ui --workspace=@apitech/education-web",
     "test:api": "npm run test --workspace=@apitech/api",
     "test:db": "node --test supabase/tests/*.test.mjs",
     "test:auth:signup": "npm run test:auth:signup --workspace=@apitech/api --",

@@ -8,6 +8,9 @@ src/simulator/, src/decoder/ และ src/store/ ตามเดิม
 
 ```text
 ui/
+├── landing/
+│   ├── LandingPage.tsx             # หน้าแนะนำเว็บและปุ่มเข้าสู่ระบบ/สมัครสมาชิก
+│   └── landing.css                 # styles หน้า Landing แบบ responsive
 ├── workspace/
 │   ├── EducationWorkspace.tsx       # shell, header, menu, การประกอบหน้า
 │   └── navigation.ts                # ชื่อ/ลำดับ/หัวข้อเมนู
@@ -45,6 +48,7 @@ ui/
 
 ## แก้อะไร ไปที่ไหน
 
+- เปลี่ยนหน้าแรกสาธารณะ: landing/LandingPage.tsx และ landing/landing.css
 - เปลี่ยนชื่อหรือลำดับเมนู: workspace/navigation.ts
 - เปลี่ยนการนำทาง/header/footer: workspace/EducationWorkspace.tsx
 - เปลี่ยนบทเรียนเริ่มต้น: education/CanEducation.tsx และ education/topics.ts

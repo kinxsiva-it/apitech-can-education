@@ -16,6 +16,8 @@ npm run export:html
 Exporter รวม JavaScript, CSS และโมเดล `ev-ipmsm-motor.glb` ไว้ใน HTML
 ไม่รวม HTML อ้างอิงของลูกค้า, credentials หรือไฟล์โมเดลอื่น
 ขั้นตอน export ไม่อ่านไฟล์ .env และไม่แก้โมเดลหรือ source ของ Viewer
+ใช้ entry `apps/education-web/src/demo-main.tsx` แยกจากแอปออนไลน์ที่มี Login
+ไฟล์ review นี้เปิดดู UI ได้โดยไม่สมัครสมาชิก จึงไม่ใช้เป็น deployment สำหรับเนื้อหาสมาชิก
 ใช้ `apps/education-web/scripts/export-html.mjs` เพื่อสร้างไฟล์ใหม่ทุกครั้งหลังปรับ UI หรือเนื้อหา
 ผลลัพธ์อยู่ใน dist ซึ่งถูก ignore ไว้ตามเดิม ไม่ได้ Commit หรือ Push อัตโนมัติ
 

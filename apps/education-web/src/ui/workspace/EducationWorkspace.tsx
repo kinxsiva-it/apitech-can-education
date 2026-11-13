@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { CanEducation } from '../education/CanEducation'
 import { educationTopics } from '../education/topics'
 import { workspaceSections } from './navigation'
@@ -7,7 +8,7 @@ import { EvSimulation } from '../ev-simulation/EvSimulation'
 import { EvSystemExplorer } from '../ev-system-explorer/EvSystemExplorer'
 import { EvComponentLab } from '../components-lab/EvComponentLab'
 
-export function EducationWorkspace() {
+export function EducationWorkspace({ accountActions }: { accountActions?: ReactNode }) {
   const [active, setActive] = useState<string>('education')
   const [topic, setTopic] = useState<string | undefined>(educationTopics[0])
   const current = workspaceSections.find((section) => section.id === active) ?? workspaceSections[0]
@@ -20,7 +21,7 @@ export function EducationWorkspace() {
           <span className="brand-rule" />
           <span className="brand-title">CAN STUDIO<small>CAN BUS EDUCATION & SIMULATION</small></span>
         </a>
-        <div className="header-meta"><span className="edition">EDUCATION EDITION</span><span className="preview-label"><i /> UI PREVIEW</span></div>
+        <div className="header-meta"><span className="edition">EDUCATION EDITION</span>{accountActions ?? <span className="preview-label"><i /> UI PREVIEW</span>}</div>
       </header>
 
       <nav className="main-tabs" aria-label="พื้นที่การเรียนรู้">

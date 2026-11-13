@@ -23,6 +23,7 @@ Motor GLB อยู่ใน components-lab/motor-glb/ แยกจาก motor-
 | กลุ่ม | ขอบเขต / ตำแหน่งปัจจุบัน | ตัวอย่าง branch เมื่อเริ่มงาน |
 |---|---|---|
 | Workspace | เมนู การประกอบหน้า App.tsx, EducationWorkspace.tsx และ shared layout | features/workspace-navigation |
+| Member frontend | apps/education-web/src/features/auth/ และ src/app/ สำหรับสมาชิกและ route guards | features/member-auth-ui |
 | Admin CMS | apps/admin-web/src/ สำหรับหน้าจอผู้ดูแล | features/admin-members |
 | Backend | apps/api/src/modules/ สำหรับ NestJS API | features/member-access-foundation |
 | Data/Contracts | supabase/ สำหรับ migrations และ packages/contracts/ สำหรับ API types | features/member-access-foundation |

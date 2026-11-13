@@ -7,6 +7,21 @@ path `src/`, `public/`, `tests/` ของเว็บเดิมในแผ�
 
 วันที่วิเคราะห์: 31 ตุลาคม 2026
 
+## งานระบบสมาชิกที่ดำเนินการล่าสุด (13 พฤศจิกายน 2026)
+
+- ฐานข้อมูล/RLS และ NestJS membership API มีแล้ว ผู้ใช้รายงานว่าทดสอบ Postman ผ่าน
+- เก็บเครื่องมือทดสอบเดิมใน commit `83dfbe5` บน `features/member-access-foundation`
+- พัฒนา Education auth UI บน `features/member-auth-ui` ซึ่งต่อจาก commit ดังกล่าว ยังไม่ merge main
+- มีหน้า Register/Login/Verify email/Forgot password/Reset password และ Membership Status แล้ว
+- เพิ่มหน้า Landing สาธารณะที่ `/` พร้อมปุ่ม Login/Register, ภาพประกอบระบบ EV และแนะนำหมวดการสอนที่ `src/ui/landing/`
+- `/learn` เปิดเฉพาะ session ที่ API ยืนยันสิทธิ์; pending/rejected/suspended มีหน้าตามสถานะ
+- คง HTML export เป็น demo สำหรับตรวจงาน แยก entry จากแอปออนไลน์
+- ขั้นตรวจรับ: ทำตาม [คู่มือทดสอบผ่านเว็บ](MEMBER_AUTH_UI.md) ด้วยบัญชีจริงก่อน merge
+- ผู้ใช้ยืนยันแล้วว่าทดลองสมัครและยืนยันอีเมลผ่านหน้าเว็บสำเร็จ บัญชีอยู่ระหว่างรอ Admin อนุมัติ ส่วนการเข้าเรียนหลังอนุมัติรอทดสอบต่อเมื่อหน้า Admin พร้อม
+- งานถัดไป: Admin login และหน้าคิวสมาชิกสำหรับ approve/reject/suspend/restore จาก CMS แล้วจึงทำ email worker และบทเรียน CMS ตามข้อตกลง
+
+รายละเอียดในแผนเก่าด้านล่างเป็นบริบทของงาน simulator ไม่ใช่สถานะล่าสุดของระบบสมาชิก
+
 แหล่งข้อกำหนด: [Customer handoff v1.0](./APITech_CAN_Bus_Education_Simulation_Handoff.md)
 เอกสารนี้เป็นการวิเคราะห์และข้อเสนอแผนงาน ยังไม่ใช่การรับรองขอบเขตหรือกำหนดส่งจากลูกค้า
 

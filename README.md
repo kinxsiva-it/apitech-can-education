@@ -10,7 +10,7 @@ npm install
 npm run dev
 ```
 
-`dev` opens Education only. Use `npm run dev:all` to start all three applications.
+`dev` opens Education only. Use `npm run dev:all` for the membership flow, which also needs the API.
 
 | Command | Application | Local URL |
 |---|---|---|
@@ -45,6 +45,8 @@ apps/
     src/decoder/            Signal definitions/decoding
     src/store/              Zustand
     src/lib/supabase/       Browser client
+    src/app/                Routes and membership gates
+    src/features/auth/      Signup, login, email links and membership status
     public/assets/          GLB demo and local-only customer reference
     scripts/export-html.mjs
     tests/motor-model.test.ts
@@ -74,6 +76,7 @@ npm run lint
 npm run test:api
 npm run test:db
 npm run test:motor
+npm run test:auth:ui
 npm run export:html
 ```
 
@@ -91,7 +94,9 @@ Build artifacts, dependencies and real environment files are not tracked.
 - API implements health/institutions and authenticated member/Admin review endpoints. Health is not a Supabase readiness check.
 - Member schema/RLS/workflow migrations were applied to the hosted project on 2026-11-13; isolated PostgreSQL tests and hosted catalog/anonymous HTTP checks passed.
 - API verifies Bearer tokens with Supabase Auth and live database access, forwarding the user JWT to RPCs with RLS.
-- Frontend login, signed-in hosted integration tests and email delivery remain unfinished. Current Education demo and GLB remain public.
+- Education opens on a public landing page with login/register links. It includes email confirmation, password recovery and server-confirmed access to /learn. See the browser testing guide below.
+- UI tests use mocked Auth/HTTP responses; a real browser/email acceptance run is still required. Approval/rejection email worker and Admin management UI remain unfinished.
+- Static demo GLB and exported review HTML remain public; route gates do not protect static assets. Future private CMS content must be authorized by the API/storage policies.
 - Customer reference HTML and legacy scaffold components remain local-only inside Education.
 - Production is online-only. Exported HTML is a review/demo artifact, separate from access-controlled production.
 
@@ -101,6 +106,7 @@ Build artifacts, dependencies and real environment files are not tracked.
 - [Membership/CMS agreements](docs/MEMBERSHIP_CMS_AGREEMENTS.md)
 - [Member access design](docs/MEMBER_ACCESS_DESIGN.md)
 - [Members API](docs/MEMBERS_API.md)
+- [Browser membership testing](docs/MEMBER_AUTH_UI.md)
 - [Postman collection and guide](tools/postman/README.md)
 - [Supabase deployment verification](docs/SUPABASE_DEPLOYMENT_2026-11-13.md)
 - [Branch guide](docs/BRANCH_GUIDE.md)

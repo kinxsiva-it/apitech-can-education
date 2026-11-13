@@ -49,7 +49,7 @@ const result = await build({
     sourcemap: false,
     cssCodeSplit: false,
     assetsInlineLimit: Number.MAX_SAFE_INTEGER,
-    lib: { entry: resolve(root, 'src/main.tsx'), name: 'APITechDemo', formats: ['iife'] },
+    lib: { entry: resolve(root, 'src/demo-main.tsx'), name: 'APITechDemo', formats: ['iife'] },
     rolldownOptions: { output: { codeSplitting: false } },
   },
 })
