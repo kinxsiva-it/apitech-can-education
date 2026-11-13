@@ -70,7 +70,7 @@ RLS/grants/RPC ในแบบต้อง implement และทดสอบก
 - Storage: รูปภาพและไฟล์ส่วนตัวในระยะ CMS; draft ไม่ใช้ public bucket
 - Email worker: แยกหน้าที่จาก HTTP handler ใช้ outbox/lease/idempotency แม้ยังอยู่ระบบเดียว
 - ไม่ทำ Edge Functions ซ้ำกับ NestJS สำหรับกติกาสมาชิกเดียวกัน
-- มี migrations, Global AuthGuard และ Members API แล้ว ดู [Members API](MEMBERS_API.md); ยังไม่ apply หรือทดสอบ end-to-end บน Supabase จริง
+- มี migrations, Global AuthGuard และ Members API แล้ว Apply บน Supabase จริงเมื่อ 13 พฤศจิกายน 2026 และตรวจ schema/grants/anonymous HTTP แล้ว แต่ยังไม่ทดสอบ signup/approval end-to-end ดู [บันทึก deployment](SUPABASE_DEPLOYMENT_2026-11-13.md)
 
 ## Environment และ deployment
 

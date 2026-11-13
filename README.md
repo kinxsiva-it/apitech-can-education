@@ -89,9 +89,9 @@ Build artifacts, dependencies and real environment files are not tracked.
 - CAN execution/telemetry remain unfinished. Input controls do not imply simulated CAN results.
 - Admin is a starter screen with API health checking, not completed member/content management.
 - API implements health/institutions and authenticated member/Admin review endpoints. Health is not a Supabase readiness check.
-- Member schema/RLS/workflow migrations and isolated PostgreSQL tests are prepared in supabase/ but not applied to the hosted project.
+- Member schema/RLS/workflow migrations were applied to the hosted project on 2026-11-13; isolated PostgreSQL tests and hosted catalog/anonymous HTTP checks passed.
 - API verifies Bearer tokens with Supabase Auth and live database access, forwarding the user JWT to RPCs with RLS.
-- Frontend login, hosted migrations/integration and email delivery remain unfinished. Current Education demo and GLB remain public.
+- Frontend login, signed-in hosted integration tests and email delivery remain unfinished. Current Education demo and GLB remain public.
 - Customer reference HTML and legacy scaffold components remain local-only inside Education.
 - Production is online-only. Exported HTML is a review/demo artifact, separate from access-controlled production.
 
@@ -101,6 +101,8 @@ Build artifacts, dependencies and real environment files are not tracked.
 - [Membership/CMS agreements](docs/MEMBERSHIP_CMS_AGREEMENTS.md)
 - [Member access design](docs/MEMBER_ACCESS_DESIGN.md)
 - [Members API](docs/MEMBERS_API.md)
+- [Postman collection and guide](tools/postman/README.md)
+- [Supabase deployment verification](docs/SUPABASE_DEPLOYMENT_2026-11-13.md)
 - [Branch guide](docs/BRANCH_GUIDE.md)
 - [Education UI guide](apps/education-web/src/ui/README.md)
 - [Component Lab](docs/EV_COMPONENT_LAB.md)

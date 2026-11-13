@@ -7,7 +7,10 @@
     "build": "tsc -p tsconfig.json",
     "dev": "npm run build && concurrently --kill-others-on-fail --names compiler,server \"tsc -p tsconfig.json --watch --preserveWatchOutput\" \"node --watch dist/main.js\"",
     "start": "node dist/main.js",
-    "test": "npm run build && node --test tests/*.test.mjs"
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "test:auth:signup": "node scripts/auth-smoke.mjs signup",
+    "test:auth:status": "node scripts/auth-smoke.mjs status",
+    "dev:reset-admin-password": "node scripts/reset-admin-password.mjs"
   },
   "dependencies": {
     "@apitech/contracts": "0.0.0",

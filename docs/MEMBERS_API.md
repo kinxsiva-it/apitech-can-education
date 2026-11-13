@@ -1,6 +1,7 @@
 # Members API และการยืนยันตัวตน
 
-สถานะ: มี NestJS API และ tests ในเครื่องแล้ว ยังไม่ apply migrations หรือทดสอบ end-to-end กับ hosted Supabase
+สถานะ: มี NestJS API และ apply migrations แล้วเมื่อ 13 พฤศจิกายน 2026 ยังไม่ทดสอบ signup/approval end-to-end กับ hosted Supabase
+ดู [บันทึก deployment](SUPABASE_DEPLOYMENT_2026-11-13.md) สำหรับผลตรวจ grants/RLS และ anonymous HTTP
 
 ## ขั้นตอนแต่ละคำขอ
 

@@ -2,7 +2,8 @@
 
 วันที่: 10 พฤศจิกายน 2026
 Branch: `features/member-access-foundation`
-สถานะ: มี SQL migrations, local PostgreSQL tests และ NestJS members endpoints แล้ว ยังไม่ apply หรือทดสอบ end-to-end กับ Supabase จริง
+สถานะ: มี SQL migrations, local PostgreSQL tests และ NestJS members endpoints แล้ว Apply บน Supabase จริงเมื่อ 13 พฤศจิกายน 2026 แต่ยังไม่ทดสอบ signup/approval end-to-end
+ผลตรวจ schema/grants/Auth triggers ดูที่ [บันทึก deployment](SUPABASE_DEPLOYMENT_2026-11-13.md)
 
 ข้อกำหนดอ้างอิง: [ข้อตกลงสมาชิกและ CMS](MEMBERSHIP_CMS_AGREEMENTS.md)
 เอกสารนี้ระบุแนวทาง implementation ที่เสนอ แยกจากข้อกำหนดที่ตกลงแล้ว หากมีรายละเอียดใหม่ด้านพฤติกรรม ให้ตรวจร่วมกันก่อนนำไปใช้

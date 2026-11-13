@@ -1,0 +1,1209 @@
+{
+  "info": {
+    "_postman_id": "da7e5150-bcde-4cba-9c30-d6dc90fdb103",
+    "name": "APITech — Membership API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Manual testing of Supabase Auth and the local NestJS API. Select an environment. Use Send one request at a time; do not run the entire collection because Admin actions change hosted data. No Admin account is created by this collection."
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "item": [
+    {
+      "name": "00 — Public checks",
+      "item": [
+        {
+          "name": "Health — START HERE",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/health",
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Active institution options",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/institutions?limit=20",
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "01 — Member authentication",
+      "item": [
+        {
+          "name": "Login member — use your existing confirmed account",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"member_email\")) stopRequest('Fill environment variable: member_email');",
+                  "if (!pm.environment.get(\"member_password\")) stopRequest('Fill environment variable: member_password');",
+                  "pm.environment.unset(\"member_access_token\");",
+                  "pm.environment.unset(\"member_refresh_token\");",
+                  "pm.environment.unset(\"member_user_id\");",
+                  "pm.environment.unset(\"target_user_id\");",
+                  "pm.environment.unset(\"target_access_version\");",
+                  "pm.environment.unset(\"target_request_id\");",
+                  "pm.environment.unset(\"target_request_version\");",
+                  "pm.environment.unset(\"target_request_status\");",
+                  "pm.environment.unset(\"target_status\");",
+                  "pm.environment.unset(\"member_profile_revision\");",
+                  "pm.environment.unset(\"member_access_version\");",
+                  "pm.environment.unset(\"member_request_id\");",
+                  "pm.environment.unset(\"member_request_version\");",
+                  "pm.variables.set('request_json', JSON.stringify({ email: pm.environment.get('member_email').trim(), password: pm.environment.get('member_password') }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (_) {}",
+                  "if (pm.response.code === 200 && typeof data.access_token === 'string' && data.user && data.user.id) {",
+                  "  pm.environment.set('member_access_token', data.access_token);",
+                  "  pm.environment.set('member_refresh_token', data.refresh_token || '');",
+                  "  pm.environment.set('member_user_id', data.user.id);",
+                  "  pm.environment.set('target_user_id', data.user.id);",
+                  "} else {",
+                  "  pm.environment.unset(\"member_access_token\");",
+                  "pm.environment.unset(\"member_refresh_token\");",
+                  "pm.environment.unset(\"member_user_id\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{supabase_url}}/auth/v1/token?grant_type=password",
+            "description": "Calls Supabase Auth directly. Enter credentials in the selected environment. It does not change passwords. Failed login clears stale tokens.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_publishable_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Signup — OPTIONAL, new account only, sends email",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"member_email\")) stopRequest('Fill environment variable: member_email');",
+                  "if (!pm.environment.get(\"member_password\")) stopRequest('Fill environment variable: member_password');",
+                  "if (!pm.environment.get(\"full_name\")) stopRequest('Fill environment variable: full_name');",
+                  "pm.variables.set('request_json', JSON.stringify({ email: pm.environment.get('member_email').trim(), password: pm.environment.get('member_password'), data: {full_name: pm.environment.get('full_name').trim()} }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{supabase_url}}/auth/v1/signup?redirect_to=http%3A%2F%2Flocalhost%3A5173",
+            "description": "Skip this for an existing confirmed account. Use an email allowed by your SMTP provider. The response does not guarantee a new account or reset an existing password.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_publishable_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Refresh member session (optional)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"member_refresh_token\")) stopRequest('Fill environment variable: member_refresh_token');",
+                  "pm.variables.set('request_json', JSON.stringify({ refresh_token: pm.environment.get('member_refresh_token') }));",
+                  "pm.environment.unset(\"member_access_token\");",
+                  "pm.environment.unset(\"member_refresh_token\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (_) {}",
+                  "if (pm.response.code === 200 && typeof data.access_token === 'string' && data.user && data.user.id) {",
+                  "  pm.environment.set('member_access_token', data.access_token);",
+                  "  pm.environment.set('member_refresh_token', data.refresh_token || '');",
+                  "  pm.environment.set('member_user_id', data.user.id);",
+                  "  pm.environment.set('target_user_id', data.user.id);",
+                  "} else {",
+                  "  pm.environment.unset(\"member_access_token\");",
+                  "pm.environment.unset(\"member_refresh_token\");",
+                  "pm.environment.unset(\"member_user_id\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{supabase_url}}/auth/v1/token?grant_type=refresh_token",
+            "description": "Rotates the refresh token. Do not repeatedly reuse a previously exported token.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_publishable_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 — My membership",
+      "item": [
+        {
+          "name": "My status — run after Login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"member_access_token\")) stopRequest('Fill environment variable: member_access_token');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) {",
+                  " const row = pm.response.json();",
+                  " pm.environment.set('member_access_version', row.version);",
+                  " if (row.latest_request) {",
+                  "  pm.environment.set('member_request_id', row.latest_request.id);",
+                  "  pm.environment.set('member_request_version', row.latest_request.version);",
+                  " }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/members/me",
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{member_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "My profile — saves profile revision",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"member_access_token\")) stopRequest('Fill environment variable: member_access_token');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) pm.environment.set('member_profile_revision', pm.response.json().revision);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/members/me/profile",
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{member_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "My request history",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"member_access_token\")) stopRequest('Fill environment variable: member_access_token');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/members/me/requests?limit=20&offset=0",
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{member_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Update my profile — CHANGES DATA",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"member_access_token\")) stopRequest('Fill environment variable: member_access_token');",
+                  "if (!pm.environment.get(\"full_name\")) stopRequest('Fill environment variable: full_name');",
+                  "if (!Number.isInteger(Number(pm.environment.get('member_profile_revision'))) || Number(pm.environment.get('member_profile_revision')) < 1) stopRequest('Load the current member_profile_revision first');",
+                  "pm.variables.set('request_json', JSON.stringify({fullName: pm.environment.get('full_name').trim(), institutionId: null, institutionOther: null, expectedRevision: Number(pm.environment.get('member_profile_revision'))}));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) pm.environment.set('member_profile_revision', pm.response.json().revision);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{api_base_url}}/members/me/profile",
+            "description": "Requires My profile first. A pending request freezes profile fields; expect 409 while under review. This example uses no institution selection.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{member_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Submit/resubmit my request — CHANGES DATA",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"member_access_token\")) stopRequest('Fill environment variable: member_access_token');",
+                  "if (!Number.isInteger(Number(pm.environment.get('member_profile_revision'))) || Number(pm.environment.get('member_profile_revision')) < 1) stopRequest('Load the current member_profile_revision first');",
+                  "pm.variables.set('request_json', JSON.stringify({expectedRevision: Number(pm.environment.get('member_profile_revision'))}));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{api_base_url}}/members/me/requests",
+            "description": "Signup confirmation already queues complete profiles. Use for incomplete profiles or after rejection and correction.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{member_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 — Admin authentication (Dev-provisioned account)",
+      "item": [
+        {
+          "name": "Login Admin — requires a separate Admin account",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"admin_email\")) stopRequest('Fill environment variable: admin_email');",
+                  "if (!pm.environment.get(\"admin_password\")) stopRequest('Fill environment variable: admin_password');",
+                  "pm.environment.unset(\"admin_access_token\");",
+                  "pm.environment.unset(\"admin_refresh_token\");",
+                  "pm.environment.unset(\"admin_user_id\");",
+                  "pm.variables.set('request_json', JSON.stringify({ email: pm.environment.get('admin_email').trim(), password: pm.environment.get('admin_password') }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (_) {}",
+                  "if (pm.response.code === 200 && typeof data.access_token === 'string' && data.user && data.user.id) {",
+                  "  pm.environment.set('admin_access_token', data.access_token);",
+                  "  pm.environment.set('admin_refresh_token', data.refresh_token || '');",
+                  "  pm.environment.set('admin_user_id', data.user.id);",
+                  "  ",
+                  "} else {",
+                  "  pm.environment.unset(\"admin_access_token\");",
+                  "pm.environment.unset(\"admin_refresh_token\");",
+                  "pm.environment.unset(\"admin_user_id\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{supabase_url}}/auth/v1/token?grant_type=password",
+            "description": "Calls Supabase Auth directly. Enter credentials in the selected environment. It does not change passwords. Failed login clears stale tokens.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_publishable_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Refresh admin session (optional)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"supabase_url\")) stopRequest('Fill environment variable: supabase_url');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"supabase_publishable_key\")) stopRequest('Fill environment variable: supabase_publishable_key');",
+                  "if (!pm.environment.get(\"admin_refresh_token\")) stopRequest('Fill environment variable: admin_refresh_token');",
+                  "pm.variables.set('request_json', JSON.stringify({ refresh_token: pm.environment.get('admin_refresh_token') }));",
+                  "pm.environment.unset(\"admin_access_token\");",
+                  "pm.environment.unset(\"admin_refresh_token\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "let data = {}; try { data = pm.response.json(); } catch (_) {}",
+                  "if (pm.response.code === 200 && typeof data.access_token === 'string' && data.user && data.user.id) {",
+                  "  pm.environment.set('admin_access_token', data.access_token);",
+                  "  pm.environment.set('admin_refresh_token', data.refresh_token || '');",
+                  "  pm.environment.set('admin_user_id', data.user.id);",
+                  "  ",
+                  "} else {",
+                  "  pm.environment.unset(\"admin_access_token\");",
+                  "pm.environment.unset(\"admin_refresh_token\");",
+                  "pm.environment.unset(\"admin_user_id\");",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "url": "{{supabase_url}}/auth/v1/token?grant_type=refresh_token",
+            "description": "Rotates the refresh token. Do not repeatedly reuse a previously exported token.",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": [
+              {
+                "key": "apikey",
+                "value": "{{supabase_publishable_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "My Admin identity",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"admin_access_token\")) stopRequest('Fill environment variable: admin_access_token');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) pm.test('Active Admin', function () { const row = pm.response.json(); pm.expect(row.role).to.eql('admin'); pm.expect(row.can_access_education).to.eql(true); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/members/me",
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 — Admin member management",
+      "item": [
+        {
+          "name": "Pending queue — selects only target_user_id",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"admin_access_token\")) stopRequest('Fill environment variable: admin_access_token');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) {",
+                  "  const page = pm.response.json();",
+                  "  const target = pm.environment.get('target_user_id');",
+                  "  const row = page.items.find(function (item) { return item.user_id === target; });",
+                  "  pm.environment.unset(\"target_access_version\");",
+                  "pm.environment.unset(\"target_request_id\");",
+                  "pm.environment.unset(\"target_request_version\");",
+                  "pm.environment.unset(\"target_request_status\");",
+                  "pm.environment.unset(\"target_status\");",
+                  "  // Never silently choose the first member in a list.",
+                  "  if (row) {",
+                  "    pm.environment.set('target_access_version', row.access_version);",
+                  "    pm.environment.set('target_status', row.status);",
+                  "    if (row.latest_request) {",
+                  "      pm.environment.set('target_request_id', row.latest_request.id);",
+                  "      pm.environment.set('target_request_version', row.latest_request.version);",
+                  "      pm.environment.set('target_request_status', row.latest_request.status);",
+                  "    }",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/admin/members?status=pending&limit=100&offset=0",
+            "description": "target_user_id is set to your test member on member Login. No arbitrary first-row auto-selection. If the target is absent, mutation versions are cleared.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "All members — REFRESH BEFORE STATUS CHANGE",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"admin_access_token\")) stopRequest('Fill environment variable: admin_access_token');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) {",
+                  "  const page = pm.response.json();",
+                  "  const target = pm.environment.get('target_user_id');",
+                  "  const row = page.items.find(function (item) { return item.user_id === target; });",
+                  "  pm.environment.unset(\"target_access_version\");",
+                  "pm.environment.unset(\"target_request_id\");",
+                  "pm.environment.unset(\"target_request_version\");",
+                  "pm.environment.unset(\"target_request_status\");",
+                  "pm.environment.unset(\"target_status\");",
+                  "  // Never silently choose the first member in a list.",
+                  "  if (row) {",
+                  "    pm.environment.set('target_access_version', row.access_version);",
+                  "    pm.environment.set('target_status', row.status);",
+                  "    if (row.latest_request) {",
+                  "      pm.environment.set('target_request_id', row.latest_request.id);",
+                  "      pm.environment.set('target_request_version', row.latest_request.version);",
+                  "      pm.environment.set('target_request_status', row.latest_request.status);",
+                  "    }",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/admin/members?limit=100&offset=0",
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Approve selected request — CHANGES DATA",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"admin_access_token\")) stopRequest('Fill environment variable: admin_access_token');",
+                  "if (!pm.environment.get(\"target_user_id\")) stopRequest('Fill environment variable: target_user_id');",
+                  "if (!pm.environment.get(\"target_request_id\")) stopRequest('Fill environment variable: target_request_id');",
+                  "if (!Number.isInteger(Number(pm.environment.get('target_request_version'))) || Number(pm.environment.get('target_request_version')) < 1) stopRequest('Load the current target_request_version first');",
+                  "if (pm.environment.get('target_request_status') !== 'pending') stopRequest('Load a pending request for the selected target first');",
+                  "",
+                  "pm.variables.set('request_json', JSON.stringify({ decision: 'approved', reason: null, expectedVersion: Number(pm.environment.get('target_request_version')) }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) {",
+                  " const row = pm.response.json();",
+                  " pm.environment.set('target_request_version', row.version);",
+                  " pm.environment.set('target_request_status', row.status);",
+                  " pm.environment.set('target_status', row.status);",
+                  " pm.environment.unset('target_access_version');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{api_base_url}}/admin/membership-requests/{{target_request_id}}",
+            "description": "Uses the explicitly selected target and its current version. This changes the hosted account and queues an email event. Get the member list again before another action.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Reject selected request — CHANGES DATA",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"admin_access_token\")) stopRequest('Fill environment variable: admin_access_token');",
+                  "if (!pm.environment.get(\"target_user_id\")) stopRequest('Fill environment variable: target_user_id');",
+                  "if (!pm.environment.get(\"target_request_id\")) stopRequest('Fill environment variable: target_request_id');",
+                  "if (!Number.isInteger(Number(pm.environment.get('target_request_version'))) || Number(pm.environment.get('target_request_version')) < 1) stopRequest('Load the current target_request_version first');",
+                  "if (pm.environment.get('target_request_status') !== 'pending') stopRequest('Load a pending request for the selected target first');",
+                  "if (!pm.environment.get(\"rejection_reason\")) stopRequest('Fill environment variable: rejection_reason');",
+                  "if (!pm.environment.get('rejection_reason').trim()) stopRequest('Rejection reason is required');",
+                  "pm.variables.set('request_json', JSON.stringify({ decision: 'rejected', reason: pm.environment.get('rejection_reason').trim(), expectedVersion: Number(pm.environment.get('target_request_version')) }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) {",
+                  " const row = pm.response.json();",
+                  " pm.environment.set('target_request_version', row.version);",
+                  " pm.environment.set('target_request_status', row.status);",
+                  " pm.environment.set('target_status', row.status);",
+                  " pm.environment.unset('target_access_version');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{api_base_url}}/admin/membership-requests/{{target_request_id}}",
+            "description": "Uses the explicitly selected target and its current version. This changes the hosted account and queues an email event. Get the member list again before another action.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Suspend selected instructor — CHANGES DATA",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"admin_access_token\")) stopRequest('Fill environment variable: admin_access_token');",
+                  "if (!pm.environment.get(\"target_user_id\")) stopRequest('Fill environment variable: target_user_id');",
+                  "if (!Number.isInteger(Number(pm.environment.get('target_access_version'))) || Number(pm.environment.get('target_access_version')) < 1) stopRequest('Load the current target_access_version first');",
+                  "if (pm.environment.get('target_status') !== 'approved') stopRequest('Refresh the target from the member list; wrong current state');",
+                  "if (!pm.environment.get(\"suspension_reason\")) stopRequest('Fill environment variable: suspension_reason');",
+                  "if (!pm.environment.get('suspension_reason').trim()) stopRequest('Suspension reason is required');",
+                  "pm.variables.set('request_json', JSON.stringify({ action: 'suspend', reason: pm.environment.get('suspension_reason').trim(), expectedVersion: Number(pm.environment.get('target_access_version')) }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) {",
+                  " const row = pm.response.json();",
+                  " pm.environment.set('target_access_version', row.version);",
+                  " pm.environment.set('target_status', row.status);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{api_base_url}}/admin/members/{{target_user_id}}/status",
+            "description": "Only changes an instructor account. Requires fresh access version and matching current state.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Restore selected instructor — CHANGES DATA",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"admin_access_token\")) stopRequest('Fill environment variable: admin_access_token');",
+                  "if (!pm.environment.get(\"target_user_id\")) stopRequest('Fill environment variable: target_user_id');",
+                  "if (!Number.isInteger(Number(pm.environment.get('target_access_version'))) || Number(pm.environment.get('target_access_version')) < 1) stopRequest('Load the current target_access_version first');",
+                  "if (pm.environment.get('target_status') !== 'suspended') stopRequest('Refresh the target from the member list; wrong current state');",
+                  "",
+                  "pm.variables.set('request_json', JSON.stringify({ action: 'restore', reason: null, expectedVersion: Number(pm.environment.get('target_access_version')) }));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200', function () { pm.expect(pm.response.code).to.eql(200); });",
+                  "if (pm.response.code === 200) {",
+                  " const row = pm.response.json();",
+                  " pm.environment.set('target_access_version', row.version);",
+                  " pm.environment.set('target_status', row.status);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "url": "{{api_base_url}}/admin/members/{{target_user_id}}/status",
+            "description": "Only changes an instructor account. Requires fresh access version and matching current state.",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{admin_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{{request_json}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 — Read-only permission checks",
+      "item": [
+        {
+          "name": "No token cannot read membership — expect 401",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401', function () { pm.expect(pm.response.code).to.eql(401); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/members/me",
+            "description": "",
+            "auth": {
+              "type": "noauth"
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Instructor cannot read Admin list — expect 403",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function stopRequest(message) { pm.execution.skipRequest(); throw new Error(message); }",
+                  "if (!pm.environment.get(\"api_base_url\")) stopRequest('Fill environment variable: api_base_url');",
+                  "if (!pm.environment.get(\"member_access_token\")) stopRequest('Fill environment variable: member_access_token');"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403', function () { pm.expect(pm.response.code).to.eql(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "url": "{{api_base_url}}/admin/members",
+            "description": "",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{member_access_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    }
+  ]
+}

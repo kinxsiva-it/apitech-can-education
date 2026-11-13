@@ -46,3 +46,10 @@ dist-ssr
 
 # Generated compiler state
 *.tsbuildinfo
+
+# Supabase CLI machine-specific connection/cache state
+/supabase/.temp/
+/supabase/.branches/
+
+# Postman environments filled with local credentials/session tokens
+/tools/postman/*.postman_environment.json

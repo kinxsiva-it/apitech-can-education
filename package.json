@@ -25,7 +25,12 @@
     "export:html": "npm run export:html --workspace=@apitech/education-web",
     "test:motor": "npm run test:motor --workspace=@apitech/education-web",
     "test:api": "npm run test --workspace=@apitech/api",
-    "test:db": "node --test supabase/tests/*.test.mjs"
+    "test:db": "node --test supabase/tests/*.test.mjs",
+    "test:auth:signup": "npm run test:auth:signup --workspace=@apitech/api --",
+    "test:auth:status": "npm run test:auth:status --workspace=@apitech/api --",
+    "postman:generate": "node tools/postman/generate.mjs --local",
+    "test:postman": "node --test tools/postman/tests/*.test.mjs",
+    "dev:reset-admin-password": "npm run dev:reset-admin-password --workspace=@apitech/api --"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.16",

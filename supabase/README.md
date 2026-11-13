@@ -1,7 +1,8 @@
 # ฐานข้อมูล Supabase
 
 โฟลเดอร์นี้เป็นเจ้าของ schema, grants, RLS และ RPC ผ่าน migrations
-เตรียม migration ระบบสมาชิกใน repo แล้ว แต่ยังไม่ได้ apply บน Supabase จริง
+Apply migrations ทั้ง 3 ไฟล์บน Project จริงแล้วเมื่อ 13 พฤศจิกายน 2026
+ผลตรวจ RLS/grants/Auth triggers และข้อจำกัดอยู่ใน [บันทึก deployment](../docs/SUPABASE_DEPLOYMENT_2026-11-13.md)
 
 ## Migration ที่เตรียมไว้
 
@@ -55,7 +56,7 @@ PGlite ไม่ใช่ Supabase Auth/PostgREST จริง และชุ�
 4. Apply migration ตามลำดับผ่านกระบวนการที่อนุญาตในงาน deploy แยก ไม่รันจาก tests นี้
 5. ตรวจ grants/RLS, Auth signup/confirmation, การเข้าถึงผ่าน API และสอง Admin review พร้อมกัน
 
-มี NestJS auth/members API และ HTTP tests แล้ว แต่ยังไม่มี UI สมาชิกหรือการ apply จริง การมี SQL/API code ยังไม่ทำให้ Demo ถูกจำกัดสิทธิ์
+มี NestJS auth/members API และ apply migrations จริงแล้ว แต่ยังไม่มี UI สมาชิกหรือการทดสอบ signup/approval end-to-end จริง Demo จึงยังไม่ถูกจำกัดสิทธิ์
 ดู [Members API](../docs/MEMBERS_API.md) ก่อนเชื่อม frontend หรือทดสอบ hosted Supabase
 
 - NestJS API อยู่ `apps/api/`; ไม่เขียน schema แยกซ้ำด้วย ORM auto-sync
