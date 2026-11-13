@@ -12,6 +12,8 @@
     "test:auth:ui": "vitest run"
   },
   "dependencies": {
+    "@apitech/brand": "^0.0.0",
+    "@apitech/content-ui": "^0.0.0",
     "@apitech/contracts": "^0.0.0",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.2",

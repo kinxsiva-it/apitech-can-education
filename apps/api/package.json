@@ -7,6 +7,7 @@
     "build": "tsc -p tsconfig.json",
     "dev": "npm run build && concurrently --kill-others-on-fail --names compiler,server \"tsc -p tsconfig.json --watch --preserveWatchOutput\" \"node --watch dist/main.js\"",
     "start": "node dist/main.js",
+    "worker:email": "node scripts/email-worker.mjs",
     "test": "npm run build && node --test tests/*.test.mjs",
     "test:auth:signup": "node scripts/auth-smoke.mjs signup",
     "test:auth:status": "node scripts/auth-smoke.mjs status",
@@ -21,10 +22,12 @@
     "@supabase/supabase-js": "^2.119.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
+    "sharp": "^0.35.5",
     "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/multer": "^2.3.0",
     "@types/node": "^24.19.2",
     "concurrently": "^10.0.7",
     "typescript": "~7.0.2"

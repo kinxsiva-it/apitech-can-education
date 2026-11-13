@@ -3,9 +3,11 @@ import { NestFactory } from '@nestjs/core'
 import { ConfigService } from '@nestjs/config'
 import { AppModule } from './app.module.js'
 import type { Request, Response, NextFunction } from 'express'
+import { json } from 'express'
 
 export async function createApp(logger: false | undefined = undefined) {
-  const app = await NestFactory.create(AppModule, { logger })
+  const app = await NestFactory.create(AppModule, { logger, bodyParser: false })
+  app.use(json({ limit: '1mb' }))
   app.setGlobalPrefix('api')
   app.use((_request: Request, response: Response, next: NextFunction) => {
     response.setHeader('Cache-Control', 'no-store')

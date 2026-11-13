@@ -24,7 +24,7 @@ Motor GLB อยู่ใน components-lab/motor-glb/ แยกจาก motor-
 |---|---|---|
 | Workspace | เมนู การประกอบหน้า App.tsx, EducationWorkspace.tsx และ shared layout | features/workspace-navigation |
 | Member frontend | apps/education-web/src/features/auth/ และ src/app/ สำหรับสมาชิกและ route guards | features/member-auth-ui |
-| Admin CMS | apps/admin-web/src/ สำหรับหน้าจอผู้ดูแล | features/admin-members |
+| Admin CMS | apps/admin-web/src/ และ admin/content API, migrations ที่เกี่ยวข้อง ดู ADMIN_CMS.md | features/admin-cms |
 | Backend | apps/api/src/modules/ สำหรับ NestJS API | features/member-access-foundation |
 | Data/Contracts | supabase/ สำหรับ migrations และ packages/contracts/ สำหรับ API types | features/member-access-foundation |
 | Simulation core | apps/education-web/src/simulator/, ECU, scheduler, scenarios และ adapter เชื่อม store | features/can-scheduler |

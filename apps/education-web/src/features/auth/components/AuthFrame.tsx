@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
 import { Link, Outlet } from 'react-router-dom'
+import { BrandLogo } from '@apitech/brand'
 
 export function AuthFrame({ children }: { children?: ReactNode }) {
   return <main className="auth-shell">
     <aside className="auth-intro">
-      <Link className="auth-brand" to="/">API<span>TECH</span><small>CAN STUDIO</small></Link>
+      <Link className="auth-brand" to="/"><BrandLogo /><small>CAN STUDIO</small></Link>
       <div className="auth-intro-copy"><p className="auth-kicker">INSTRUCTOR LEARNING PLATFORM</p>
         <h1>เชื่อมความเข้าใจ<br /><span>สู่ห้องเรียน EV</span></h1>
         <p>สื่อประกอบการสอนเพื่อสำรวจระบบรถไฟฟ้า<br />ชิ้นส่วน และการสื่อสารบนเครือข่าย CAN</p>

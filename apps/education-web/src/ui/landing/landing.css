@@ -36,6 +36,7 @@
   border-bottom: 1px solid #ffffff12;
 }
 .landing-brand {
+  --apitech-logo-width: 160px;
   font:
     italic 29px/1 Impact,
     'Arial Narrow',
@@ -612,6 +613,7 @@
     display: none;
   }
   .landing-brand {
+    --apitech-logo-width: 124px;
     font-size: 25px;
   }
   .landing-button-small {

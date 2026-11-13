@@ -1,0 +1,8 @@
+.apitech-logo {
+  display: block;
+  width: var(--apitech-logo-width, 160px);
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: transparent;
+}

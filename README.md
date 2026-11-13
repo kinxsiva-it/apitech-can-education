@@ -28,7 +28,7 @@ Each app owns its environment; copy its .env.example to .env.local for a fresh c
 | File | Purpose |
 |---|---|
 | apps/education-web/.env.local | Browser Supabase URL and publishable key |
-| apps/admin-web/.env.local | Optional VITE_API_URL; empty means same-origin /api |
+| apps/admin-web/.env.local | Browser Supabase URL/publishable key and optional VITE_API_URL |
 | apps/api/.env.local | Port, host, CORS and future server authentication settings |
 
 API starts with local defaults without an env file. Member endpoints need both Supabase settings; health remains public without them.
@@ -60,7 +60,8 @@ apps/
     src/main.ts
     tests/                  HTTP integration tests
 packages/contracts/         Type-only API contracts
-supabase/                   Future schema, grants, RLS and migrations
+packages/brand/             Customer logo and shared BrandLogo component
+supabase/                   Schema, grants, RLS, migrations and checks
 content/                    Source lesson/scenario/DBC fixtures
 docs/                       Requirements and architecture
 ```
@@ -77,6 +78,7 @@ npm run test:api
 npm run test:db
 npm run test:motor
 npm run test:auth:ui
+npm run test:admin
 npm run export:html
 ```
 
@@ -90,12 +92,13 @@ Build artifacts, dependencies and real environment files are not tracked.
 
 - Existing Education and interactive SVG/procedural/GLB motor views are preserved; tracked motor GLB has 63 meshes.
 - CAN execution/telemetry remain unfinished. Input controls do not imply simulated CAN results.
-- Admin is a starter screen with API health checking, not completed member/content management.
+- Admin includes member approval/status changes, institutions, notifications, audit, delivery status and text/image content management. CMS migrations were applied on 2026-11-14 after owner approval; 18 hosted catalog checks passed. See the Admin guide for browser acceptance.
 - API implements health/institutions and authenticated member/Admin review endpoints. Health is not a Supabase readiness check.
 - Member schema/RLS/workflow migrations were applied to the hosted project on 2026-11-13; isolated PostgreSQL tests and hosted catalog/anonymous HTTP checks passed.
 - API verifies Bearer tokens with Supabase Auth and live database access, forwarding the user JWT to RPCs with RLS.
 - Education opens on a public landing page with login/register links. It includes email confirmation, password recovery and server-confirmed access to /learn. See the browser testing guide below.
-- UI tests use mocked Auth/HTTP responses; a real browser/email acceptance run is still required. Approval/rejection email worker and Admin management UI remain unfinished.
+- The owner reports member/UI/content acceptance passed. Automated tests predate the latest visual/navigation changes and must be rerun before merge/deploy when permitted.
+- Approval/rejection emails are deferred for the pilot: applicants contact the administrator directly. The worker defaults to disabled; enable only with MEMBERSHIP_EMAIL_ENABLED=true after reviewing/skipping the pilot backlog and configuring the provider. Supabase Auth confirmation/recovery remain active.
 - Static demo GLB and exported review HTML remain public; route gates do not protect static assets. Future private CMS content must be authorized by the API/storage policies.
 - Customer reference HTML and legacy scaffold components remain local-only inside Education.
 - Production is online-only. Exported HTML is a review/demo artifact, separate from access-controlled production.
@@ -107,6 +110,7 @@ Build artifacts, dependencies and real environment files are not tracked.
 - [Member access design](docs/MEMBER_ACCESS_DESIGN.md)
 - [Members API](docs/MEMBERS_API.md)
 - [Browser membership testing](docs/MEMBER_AUTH_UI.md)
+- [Admin CMS usage and acceptance](docs/ADMIN_CMS.md)
 - [Postman collection and guide](tools/postman/README.md)
 - [Supabase deployment verification](docs/SUPABASE_DEPLOYMENT_2026-11-13.md)
 - [Branch guide](docs/BRANCH_GUIDE.md)

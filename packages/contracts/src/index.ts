@@ -66,3 +66,14 @@ export interface AdminMember {
 }
 
 export interface Page<T> { items: T[]; total: number; limit: number; offset: number }
+
+export interface Institution extends InstitutionOption { is_active: boolean; version: number; created_at: string; updated_at: string }
+export interface AdminNotification { id: string; request_id: string; created_at: string; read_at: string | null }
+export interface AuditEntry { id: string; actor_id: string | null; action: string; entity_type: string; entity_id: string; before_data: unknown; after_data: unknown; created_at: string }
+export type ContentCollection = 'education' | 'components'
+export interface ContentBlock { id: string; type: 'text' | 'heading' | 'image'; text: string; assetId: string | null; alt: string }
+export interface ContentTopic { id: string; title: string; blocks: ContentBlock[] }
+export interface ContentLesson { id: string; title: string; summary: string; topics: ContentTopic[] }
+export interface ContentDocument { lessons: ContentLesson[] }
+export interface ContentVersion { id: number; collection_key: ContentCollection; document: ContentDocument; created_by: string; created_at: string }
+export interface ContentState { key: ContentCollection; version: number; draft: ContentVersion | null; published: ContentVersion | null }

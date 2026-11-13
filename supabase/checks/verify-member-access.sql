@@ -21,7 +21,7 @@ with app_tables as (
   union all select 'rpc_security_definer_fixed_search_path',count(*)=8 and bool_and(prosecdef and 'search_path=""'=any(proconfig)) from rpc
   union all select 'internal_functions_not_callable',not exists(
     select 1 from pg_proc p join pg_namespace n on n.oid=p.pronamespace
-    where n.nspname='private' and p.proname not in ('is_active_admin','can_access_education')
+    where n.nspname='private' and p.proname not in ('is_active_admin','can_access_education','can_read_cms_asset')
       and (has_function_privilege('anon',p.oid,'EXECUTE') or has_function_privilege('authenticated',p.oid,'EXECUTE')))
   union all select 'auth_triggers_enabled',count(*)=3 and bool_and(tgenabled='O') from pg_trigger
     where tgrelid='auth.users'::regclass and tgname in ('member_created','member_email_confirmed','zz_member_confirmed_on_insert')

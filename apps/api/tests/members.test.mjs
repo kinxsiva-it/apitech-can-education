@@ -53,6 +53,7 @@ before(async () => {
       if (!identity) return send(res, 401, { code: 'PGRST301', message: 'Not authenticated' })
       if (state.failure?.path === url.pathname) return send(res, state.failure.status ?? 400, { code: state.failure.code, message: 'Sensitive SQL details must not be returned' })
       if (url.pathname === '/rest/v1/rpc/get_my_access') return send(res, 200, state.accessOverride === undefined ? identity : state.accessOverride)
+      if (url.pathname === '/rest/v1/rpc/get_cms_content' || url.pathname === '/rest/v1/rpc/save_cms_content' || url.pathname === '/rest/v1/rpc/publish_cms_content') return send(res,200,{key:'education',version:1,draft:null,published:null})
       if (url.pathname === '/rest/v1/profiles') return send(res, 200, state.profile)
       if (url.pathname === '/rest/v1/membership_requests') return send(res, 200, [state.request], { 'Content-Range': '0-0/1' })
       if (url.pathname === '/rest/v1/rpc/update_my_profile') {
@@ -129,6 +130,12 @@ test('own status/profile/history preserve JWT, owner filters, pagination and no-
 test('all Admin routes reject instructor even when Auth user_metadata claims admin', async () => {
   for (const [path, body, method] of [
     ['/admin/members', undefined, 'GET'],
+    ['/admin/institutions', undefined, 'GET'],
+    ['/admin/notifications', undefined, 'GET'],
+    ['/admin/audit', undefined, 'GET'],
+    ['/admin/email-deliveries', undefined, 'GET'],
+    ['/admin/content/education', undefined, 'GET'],
+    ['/admin/media', undefined, 'POST'],
     [`/admin/membership-requests/${requestId}`, { decision: 'approved', expectedVersion: 1 }, 'PATCH'],
     [`/admin/members/${userId}/status`, { action: 'suspend', reason: 'Review', expectedVersion: 1 }, 'PATCH'],
   ]) assert.equal((await call(path, 'user-token', body, method)).status, 403)
@@ -151,7 +158,36 @@ test('strict validation blocks injected role/user/actor and invalid review/pagin
   assert.equal((await call('/members/me/requests', 'user-token', { expectedRevision: 1, userId: adminId }, 'POST')).status, 400)
   assert.equal((await call('/admin/members?limit=101', 'admin-token')).status, 400)
   assert.equal((await call('/admin/members?offset=-1', 'admin-token')).status, 400)
+  assert.equal((await call('/admin/content/education/draft', 'admin-token', { expectedVersion: 1, document: { lessons: [], html: '<script>bad</script>' } }, 'POST')).status, 400)
+  assert.equal((await call('/admin/content/education/publish', 'admin-token', { expectedVersion: 1 }, 'POST')).status, 400)
+  assert.equal((await call('/admin/institutions', 'admin-token', { id: null, name: '', isActive: true, expectedVersion: null }, 'POST')).status, 400)
+  assert.equal((await call('/admin/media', 'admin-token', {}, 'POST')).status, 400)
   assert.ok(state.calls.every((c) => !c.path.startsWith('/rest/v1/rpc/') || c.path.endsWith('get_my_access')))
+})
+
+test('published content and private images require approved membership before any data read', async () => {
+  assert.equal((await call('/content/education','user-token')).status,403)
+  assert.equal((await call(`/media/${requestId}`,'user-token')).status,403)
+  assert.ok(!state.calls.some(c=>/get_published_content|get_cms_asset_path/.test(c.path)))
+})
+
+test('Admin CMS routes forward versions and document changes to checked RPCs',async()=>{
+  assert.equal((await call('/admin/content/education','admin-token')).status,200)
+  assert.equal((await call('/admin/content/education/draft','admin-token',{expectedVersion:1,document:{lessons:[]}},'POST')).status,201)
+  assert.deepEqual(state.calls.find(c=>c.path.endsWith('save_cms_content')).args,{p_key:'education',p_document:{lessons:[]},p_expected_version:1})
+  assert.equal((await call('/admin/content/education/publish','admin-token',{expectedVersion:2,previewVersion:10},'POST')).status,201)
+  assert.deepEqual(state.calls.find(c=>c.path.endsWith('publish_cms_content')).args,{p_key:'education',p_expected_version:2,p_preview_version:10})
+  const restore=await call('/admin/content/education/restore','admin-token',{expectedVersion:3,sourceVersion:7},'POST')
+  assert.equal(restore.status,201)
+  assert.deepEqual(state.calls.filter(c=>c.path.endsWith('save_cms_content')).at(-1).args,{p_key:'education',p_document:null,p_expected_version:3,p_restore_version:7})
+})
+
+test('image upload rejects disguised executable content before reaching Storage',async()=>{
+  const form=new FormData()
+  form.append('file',new Blob(['<script>not an image</script>'],{type:'image/png'}),'pretend.png')
+  const response=await fetch(`${apiUrl}/api/admin/media`,{method:'POST',headers:{Authorization:'Bearer admin-token'},body:form})
+  assert.equal(response.status,400)
+  assert.ok(!state.calls.some(c=>c.path.startsWith('/storage/')))
 })
 
 test('valid profile/submit/admin review/status use named RPCs and single-row composite responses', async () => {

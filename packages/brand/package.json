@@ -1,0 +1,9 @@
+{
+  "name": "@apitech/brand",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/BrandLogo.tsx" },
+  "dependencies": { "react": "^19.3.1" },
+  "devDependencies": { "@types/react": "^19.3.0" }
+}

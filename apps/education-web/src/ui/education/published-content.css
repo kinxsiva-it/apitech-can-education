@@ -1,0 +1,140 @@
+.published-learning {
+  border: 1px solid #74899c30;
+  border-radius: 6px;
+  background: #111923;
+  padding: 26px;
+  margin-bottom: 24px;
+}
+.published-learning > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 26px;
+}
+.published-learning h2 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 9px 0;
+}
+.published-learning button {
+  background: #1b2a3b;
+  border: 1px solid #6c849733;
+  color: #abc2d6;
+  border-radius: 4px;
+  font-size: 10px;
+  padding: 10px 14px;
+}
+.published-learning > p {
+  font-size: 12px;
+  line-height: 2;
+  color: #91a8ba;
+  padding-block: 18px;
+}
+.published-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 30px;
+}
+.published-layout > nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-self: start;
+}
+.published-layout > nav button {
+  text-align: left;
+  display: flex;
+  gap: 12px;
+  align-items: start;
+  line-height: 1.9;
+}
+.published-layout > nav button span {
+  font:
+    9px ui-monospace,
+    monospace;
+  padding-top: 4px;
+  color: #829fb8;
+}
+.published-layout > nav button.selected {
+  border-color: #d9895055;
+  color: #e9b48d;
+  background: #d9895010;
+}
+.published-learning .cms-content-preview {
+  min-width: 0;
+}
+.published-learning .cms-eyebrow {
+  font:
+    8px ui-monospace,
+    monospace;
+  letter-spacing: 1px;
+  color: #cd956e;
+}
+.published-learning .cms-preview-summary {
+  color: #8ba4b8;
+  font-size: 12px;
+  line-height: 2;
+  margin: 15px 0 25px;
+}
+.published-learning .cms-content-preview section {
+  margin-block: 30px;
+}
+.published-learning h3 {
+  font-size: 18px;
+  margin-bottom: 17px;
+}
+.published-learning h4 {
+  font-size: 14px;
+  color: #c0d2df;
+  margin: 20px 0;
+}
+.published-learning .cms-prose p {
+  font-size: 13px;
+  line-height: 2.2;
+  color: #aebdcb;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-height: 1em;
+}
+.published-learning .cms-bullet {
+  padding-left: 14px;
+}
+.published-learning .cms-prose a {
+  color: #f3b080;
+  text-decoration: underline;
+}
+.published-learning figure {
+  margin: 25px 0;
+}
+.published-learning img {
+  max-width: 100%;
+  max-height: 580px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+.published-learning figcaption {
+  font-size: 10px;
+  color: #8199ad;
+  margin-top: 10px;
+}
+@media (max-width: 760px) {
+  .published-layout {
+    grid-template-columns: 1fr;
+    gap: 27px;
+  }
+  .published-learning {
+    padding: 20px;
+  }
+  .published-learning > header {
+    align-items: start;
+    flex-direction: column;
+  }
+  .published-layout > nav {
+    max-height: 260px;
+    overflow: auto;
+  }
+  .published-learning h2 {
+    font-size: 20px;
+  }
+}

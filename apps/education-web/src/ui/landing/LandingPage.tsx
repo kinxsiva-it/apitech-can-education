@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { BrandLogo } from '@apitech/brand'
 import { useAuth } from '../../features/auth/auth-context'
 import './landing.css'
 
@@ -300,7 +301,7 @@ export function LandingPage() {
           className="landing-brand"
           aria-label="APITech CAN Education หน้าแรก"
         >
-          API<span>TECH</span>
+          <BrandLogo />
           <small>CAN EDUCATION</small>
         </Link>
         <nav aria-label="เมนูหลัก">

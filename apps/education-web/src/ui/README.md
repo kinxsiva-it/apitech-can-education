@@ -48,6 +48,7 @@ ui/
 
 ## แก้อะไร ไปที่ไหน
 
+- โลโก้ลูกค้าของทั้ง Education/Admin: `packages/brand/src/assets/apitech-logo-transparent.png` และ `packages/brand/src/BrandLogo.tsx` (จาก root repo); เก็บ JPG ต้นฉบับไว้ในโฟลเดอร์เดียวกัน
 - เปลี่ยนหน้าแรกสาธารณะ: landing/LandingPage.tsx และ landing/landing.css
 - เปลี่ยนชื่อหรือลำดับเมนู: workspace/navigation.ts
 - เปลี่ยนการนำทาง/header/footer: workspace/EducationWorkspace.tsx

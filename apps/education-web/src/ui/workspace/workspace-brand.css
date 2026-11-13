@@ -1,0 +1,6 @@
+.lab-header .brand { --apitech-logo-width: 160px; min-width: 0; }
+@media (max-width: 720px) {
+  .lab-header .brand { --apitech-logo-width: 110px; }
+  .lab-header { flex-wrap: wrap; }
+  .lab-header .header-meta { margin-left: auto; }
+}

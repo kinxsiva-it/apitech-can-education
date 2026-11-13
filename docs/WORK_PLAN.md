@@ -20,6 +20,21 @@ path `src/`, `public/`, `tests/` ของเว็บเดิมในแผ�
 - ผู้ใช้ยืนยันแล้วว่าทดลองสมัครและยืนยันอีเมลผ่านหน้าเว็บสำเร็จ บัญชีอยู่ระหว่างรอ Admin อนุมัติ ส่วนการเข้าเรียนหลังอนุมัติรอทดสอบต่อเมื่อหน้า Admin พร้อม
 - งานถัดไป: Admin login และหน้าคิวสมาชิกสำหรับ approve/reject/suspend/restore จาก CMS แล้วจึงทำ email worker และบทเรียน CMS ตามข้อตกลง
 
+## Admin CMS (รอบพัฒนา 13 พฤศจิกายน 2026)
+
+ตรวจรับโดยเจ้าของ 14 พฤศจิกายน 2026: flow สมาชิก, UI และการจัดการเนื้อหาด้วยข้อมูลตัวอย่างผ่านแล้ว
+พักอีเมลแจ้งผลอนุมัติ/ปฏิเสธช่วงทดลอง ใช้การประสานกับผู้ดูแลโดยตรง คง Auth confirmation/recovery
+Worker ปิดโดยค่าเริ่มต้น ก่อนเปิดภายหลังต้องข้ามคิวช่วงทดลองเพื่อไม่ส่งผลย้อนหลัง
+รอบปรับธีม/เมนู/การอ่าน noti ล่าสุดไม่ได้รัน tests/build ตามข้อกำหนดของเจ้าของ ต้องตรวจอัตโนมัติอีกครั้งก่อน merge/deploy
+
+- เปิด `features/admin-cms` ต่อจาก `features/member-auth-ui` commit `87d373e` ยังไม่ merge main
+- มี Admin Login, Dashboard, สมาชิก, สถาบัน, Notification, Audit และหน้าสถานะอีเมล
+- มี Editor ข้อความ/รูปภาพสำหรับ Education และ Component Lab, ordering, delete, Draft/Preview/Publish และ restore เป็นร่างใหม่
+- ใช้ renderer ร่วมกับ Education; เนื้อหาจริงอ่าน published snapshot และรูปแบบ private ผ่าน API
+- เตรียม email worker พร้อม retry/lease/idempotency โดยยังไม่ส่งจริง เพราะต้องตั้งค่า provider ก่อน
+- วันที่ 14 พฤศจิกายน 2026 เจ้าของอนุญาตแล้ว จึง apply migration CMS ใหม่ 2 ไฟล์สำเร็จ ตรวจ hosted catalog/security 18 รายการผ่าน และ dry-run ยืนยันว่าไม่มี migration ค้าง ดู [ผล deployment](SUPABASE_CMS_DEPLOYMENT_2026-11-14.md)
+- ต้องตรวจรับบน hosted Storage และบัญชีจริงหลัง apply ดู [คู่มือ CMS](ADMIN_CMS.md)
+
 รายละเอียดในแผนเก่าด้านล่างเป็นบริบทของงาน simulator ไม่ใช่สถานะล่าสุดของระบบสมาชิก
 
 แหล่งข้อกำหนด: [Customer handoff v1.0](./APITech_CAN_Bus_Education_Simulation_Handoff.md)

@@ -11,6 +11,13 @@ async function fixture() {
     create role authenticated nologin;
     create role service_role nologin bypassrls;
     create schema auth;
+    create schema storage;
+    create table storage.buckets(id text primary key,name text,public boolean,file_size_limit bigint,allowed_mime_types text[]);
+    create table storage.objects(id uuid default gen_random_uuid(),bucket_id text,name text);
+    alter table storage.objects enable row level security;
+    grant usage on schema storage to authenticated;
+    grant select,insert on storage.objects to authenticated;
+    create function storage.foldername(text) returns text[] language sql as $$ select string_to_array($1,'/'); $$;
     grant usage on schema public, auth to anon, authenticated;
     create table auth.users(id uuid primary key, email text, email_confirmed_at timestamptz, raw_user_meta_data jsonb default '{}');
     create function auth.uid() returns uuid language sql stable as $$
@@ -69,6 +76,75 @@ function denied(promise, code = '42501') {
   return assert.rejects(promise, (error) => error.code === code)
 }
 
+const contentDoc = (title = 'EV Basics') => ({ lessons: [{id:'10000000-0000-4000-8000-000000000010',title,summary:'Summary',topics:[{id:'10000000-0000-4000-8000-000000000011',title:'Topic',blocks:[{id:'10000000-0000-4000-8000-000000000012',type:'text',text:'Safe **text**',assetId:null,alt:''}]}]}] })
+async function cms(db, sql, args = []) { return as(db, ids.admin, async () => (await db.query(sql,args)).rows[0]?.value) }
+
+test('CMS isolates drafts, preserves published content, rejects stale publishing and restores as a new draft', async () => {
+  const db=await fixture()
+  try {
+    await admin(db,ids.admin); await user(db,ids.a); await confirm(db,ids.a); await review(db,ids.a,'approved')
+    await denied(as(db,ids.a,()=>db.query("select public.save_cms_content('education',$1,1)",[contentDoc()])))
+    await denied(as(db,null,()=>db.query("select public.get_published_content('education')")))
+    let state=await cms(db,"select public.save_cms_content('education',$1,1) as value",[contentDoc()])
+    const first=state.draft.id
+    assert.equal(state.published,null)
+    assert.equal((await as(db,ids.a,()=>db.query('select count(*)::int as n from public.cms_versions'))).rows[0].n,0)
+    assert.equal((await as(db,ids.a,()=>db.query("select public.get_published_content('education') as v"))).rows[0].v,null)
+    await denied(cms(db,"select public.publish_cms_content('education',1,$1) as value",[first]),'40001')
+    state=await cms(db,"select public.publish_cms_content('education',2,$1) as value",[first])
+    assert.equal(state.published.id,first)
+    state=await cms(db,"select public.save_cms_content('education',$1,3) as value",[contentDoc('New draft')])
+    assert.equal(state.published.id,first)
+    await denied(cms(db,"select public.publish_cms_content('education',4,$1) as value",[first]),'40001')
+    state=await cms(db,"select public.save_cms_content('education',null,4,$1) as value",[first])
+    assert.notEqual(state.draft.id,first); assert.equal(state.draft.document.lessons[0].title,'EV Basics')
+    assert.equal(state.published.id,first)
+    await denied(as(db,ids.admin,()=>db.query('delete from public.cms_versions')))
+    const logs=await db.query("select action from public.audit_logs where action in ('content.restore','content.publish')")
+    assert.equal(logs.rows.length,2)
+  }finally{await db.close()}
+})
+
+test('CMS validates direct RPC documents and private image visibility follows publication and live membership', async () => {
+  const db=await fixture()
+  try {
+    await admin(db,ids.admin); await user(db,ids.a); await confirm(db,ids.a); await review(db,ids.a,'approved')
+    const invalid=contentDoc(); invalid.lessons[0].topics[0].blocks[0].text={html:'bad'}
+    await denied(cms(db,"select public.save_cms_content('education',$1,1) as value",[invalid]),'22023')
+    const duplicate=contentDoc();duplicate.lessons[0].topics[0].id=duplicate.lessons[0].id
+    await denied(cms(db,"select public.save_cms_content('education',$1,1) as value",[duplicate]),'22023')
+    const imageId='10000000-0000-4000-8000-000000000020',path=`${ids.admin}/${imageId}.webp`
+    await as(db,ids.admin,()=>db.query("insert into storage.objects(bucket_id,name) values('cms-images',$1)",[path]))
+    await cms(db,'select public.register_cms_asset($1,$2,100) as value',[imageId,path])
+    await denied(as(db,ids.a,()=>db.query('select public.get_cms_asset_path($1)',[imageId])))
+    const doc=contentDoc();doc.lessons[0].topics[0].blocks[0]={id:doc.lessons[0].topics[0].blocks[0].id,type:'image',text:'',assetId:imageId,alt:'Motor'}
+    const state=await cms(db,"select public.save_cms_content('education',$1,1) as value",[doc])
+    await cms(db,"select public.publish_cms_content('education',2,$1) as value",[state.draft.id])
+    assert.equal((await as(db,ids.a,()=>db.query('select public.get_cms_asset_path($1) as path',[imageId]))).rows[0].path,path)
+    assert.equal((await as(db,ids.a,()=>db.query('select count(*)::int as n from storage.objects'))).rows[0].n,1)
+    const currentVersion=(await access(db,ids.a)).version
+    await cms(db,'select public.change_member_status($1,\'suspend\',\'Test\',$2) as value',[ids.a,currentVersion])
+    await denied(as(db,ids.a,()=>db.query('select public.get_cms_asset_path($1)',[imageId])))
+    assert.equal((await as(db,ids.a,()=>db.query('select count(*)::int as n from storage.objects'))).rows[0].n,0)
+  }finally{await db.close()}
+})
+
+test('email worker RPC is service-only, leased and rejects stale acknowledgements', async () => {
+  const db=await fixture()
+  try {
+    await admin(db,ids.admin);await user(db,ids.a);await confirm(db,ids.a);await review(db,ids.a,'approved')
+    await denied(as(db,ids.admin,()=>db.query('select public.claim_membership_email()')))
+    await db.exec('set role service_role')
+    const job=(await db.query('select public.claim_membership_email() as v')).rows[0].v
+    assert.equal(job.recipient,`${ids.a}@example.test`)
+    assert.equal((await db.query('select public.claim_membership_email() as v')).rows[0].v,null)
+    assert.equal((await db.query('select public.finish_membership_email($1,$2,true,\'provider-id\') as v',[job.id,ids.admin])).rows[0].v,false)
+    assert.equal((await db.query('select public.finish_membership_email($1,$2,true,\'provider-id\') as v',[job.id,job.claim])).rows[0].v,true)
+    await db.exec('reset role')
+    assert.equal((await db.query('select status from private.email_outbox')).rows[0].status,'sent')
+  }finally{await db.close()}
+})
+
 test('signup metadata cannot promote user; confirmation queues only once', async () => {
   const db = await fixture()
   try {
@@ -111,7 +187,7 @@ test('RLS isolates members; direct writes/log tampering remain denied to Admin',
       await denied(db.query('select public.change_member_status($1,$2,$3,1)',[ids.admin,'suspend','No']))
     })
     const rls = await db.query("select count(*)::int as n from pg_class c join pg_namespace n on c.relnamespace=n.oid where n.nspname in ('public','private') and c.relkind='r' and c.relrowsecurity")
-    assert.equal(rls.rows[0].n,8)
+    assert.equal(rls.rows[0].n,11)
   } finally { await db.close() }
 })
 

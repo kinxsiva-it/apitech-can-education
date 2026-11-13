@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { BrandLogo } from '@apitech/brand'
 import type { ReactNode } from 'react'
 import { CanEducation } from '../education/CanEducation'
 import { educationTopics } from '../education/topics'
@@ -7,6 +8,8 @@ import { LabIcon } from '../shared/icons/LabIcon'
 import { EvSimulation } from '../ev-simulation/EvSimulation'
 import { EvSystemExplorer } from '../ev-system-explorer/EvSystemExplorer'
 import { EvComponentLab } from '../components-lab/EvComponentLab'
+import { PublishedContent } from '../education/PublishedContent'
+import './workspace-brand.css'
 
 export function EducationWorkspace({ accountActions }: { accountActions?: ReactNode }) {
   const [active, setActive] = useState<string>('education')
@@ -17,7 +20,7 @@ export function EducationWorkspace({ accountActions }: { accountActions?: ReactN
     <div className="lab-shell">
       <header className="lab-header">
         <a className="brand" href="./" aria-label="APITech CAN Studio home">
-          <span className="brand-mark">API<span>TECH</span><i /></span>
+          <BrandLogo />
           <span className="brand-rule" />
           <span className="brand-title">CAN STUDIO<small>CAN BUS EDUCATION & SIMULATION</small></span>
         </a>
@@ -40,7 +43,7 @@ export function EducationWorkspace({ accountActions }: { accountActions?: ReactN
           <span className="outline-tag">INTERFACE CONCEPT</span>
         </div>
 
-        {active === 'components' ? <EvComponentLab /> : active === 'explorer' ? <EvSystemExplorer /> : active === 'simulation' ? <EvSimulation onNavigate={(section) => setActive(section)} /> : active !== 'education' ? (
+        {active === 'components' ? <><EvComponentLab />{accountActions && <PublishedContent collection="components" />}</> : active === 'explorer' ? <EvSystemExplorer /> : active === 'simulation' ? <EvSimulation onNavigate={(section) => setActive(section)} /> : active !== 'education' ? (
           <section className="panel menu-placeholder" aria-labelledby="menu-placeholder-title">
             <div className="panel-heading"><LabIcon name={current.icon} /><h2 id="menu-placeholder-title">{current.label}</h2></div>
             <div className="workspace-canvas">
@@ -51,7 +54,7 @@ export function EducationWorkspace({ accountActions }: { accountActions?: ReactN
               </div>
             </div>
           </section>
-        ) : <CanEducation topic={topic} onTopicChange={setTopic} />}
+        ) : accountActions ? <PublishedContent collection="education" /> : <CanEducation topic={topic} onTopicChange={setTopic} />}
       </main>
       <footer className="lab-footer"><span><i /> APITECH CAN STUDIO</span><span>EDUCATION & SIMULATION PLATFORM</span><span>UI CONCEPT · NO SIMULATION DATA</span></footer>
     </div>
